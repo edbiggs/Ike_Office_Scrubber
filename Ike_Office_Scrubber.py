@@ -18,8 +18,8 @@ print("START")
 driver.get("https://office.ikegps.com/#/login")
 
 # Login credentials
-username = "edward.biggs@rivercityinc.net"
-password = "k5c8QUQSc6*DtcMG"
+username = ""
+password = ""
 
 # Project to be sorted
 target = "wwk-pry"
