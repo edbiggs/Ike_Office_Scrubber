@@ -6,124 +6,193 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from dotenv import load_dotenv
+import os
 import time
 
 
-service = Service(executable_path="chromedriver.exe")
+# ──────────────── Login credentials ────────────────
+load_dotenv()
+username = os.getenv("IKE_USERNAME")
+password = os.getenv("IKE_PASSWORD")
+
+# ──────────────── Project name being targeted ────────────────
+target = "TTV-CVG v3"
+
+
+# ─── Configuration for check_for_empty_fields() function ────────────────
+check_fields = {
+    "pole": ["ID", "Type", "Owner", "Location"],
+    "equipment": ["Type", "Attachment Height"],
+    "span": ["Span Length", "Type"],
+    "power_circuit": ["Type", "Primary Conductor", "Primary Framing"],
+    "communication": ["Size", "Owner", "Attachment Height"],
+}
+
+
+# ChromeDriver and Selenium variables
+service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service)
+
 actions = ActionChains(driver)
 
-print("START")
 
-driver.get("https://office.ikegps.com/#/login")
+def check_for_empty_fields(id):
 
-# Login credentials
-username = ""
-password = ""
+    missing = []
 
-# Project to be sorted
-target = "wwk-pry"
+    try:
+        pole_id = driver.find_element(
+            By.XPATH,
+            "//div[contains(@class,'c-Input--id') and contains(@class,'is-dirty')]"
+        )
+    except:
+        missing.append("Pole ID")
 
-# Click Login button
-WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-    (By.CLASS_NAME, "mdl-button--raised")))
+    try:
+        pole_type = driver.find_element(
+            By.XPATH,
+            "//div[@title='Type']"
+            "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
+            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+            "//span[contains(@class,'c-MultiListInput__label')]"
+        )
+    except:
+        missing.append("Pole Type")
 
-login_button = driver.find_element(
-    By.CLASS_NAME, "mdl-button--raised")
+    try:
+        tip = driver.find_element(
+            By.XPATH,
+            "//div[@title='Tip']"
+            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+        )
+    except:
+        missing.append("Tip")
 
-login_button.click()
+    try:
+        ms_height = driver.find_element(
+            By.XPATH,
+            "//div[contains(@class,'c-SubFormInstance')]"
+            "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
+            "//div[@title='Mid Span Height']"
+            "/following-sibling::div"
+            "//div[contains(@class,'c-PMLink')]"
+        )
+    except:
+        missing.append("Mid Span Height")
 
-# Insert username
-username_input = driver.find_element(
-    By.CLASS_NAME, "input")
+    try:
+        ms_clearance = driver.find_element(
+            By.XPATH,
+            "//div[contains(@class,'c-SubFormInstance')]"
+            "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
+            "//div[@title='MS Clearance ']"
+            "/following-sibling::div"
+            "//div[contains(@class,'c-PMLink')]"
+        )
+    except:
+        missing.append("MS Clearance")
 
-username_input.send_keys(username + Keys.ENTER)
-
-
-# Insert password
-password_input = driver.find_element(
-    By.NAME, "password")
-
-password_input.send_keys(password + Keys.ENTER)
-
-# Select Project
-WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-    (By.XPATH, "//span[@title='" + target + "']")))
-
-
-project = driver.find_element(By.XPATH, "//span[@title='" + target + "']")
-
-project.click()
-
-actions.send_keys(Keys.TAB * 2)
-actions.send_keys(Keys.ENTER)
-actions.perform()
-
-
-# Create list of pole IDs and sort in ascending order
-WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-    (By.CLASS_NAME, "c-CollectionCard__link")))
-
-
-poles = driver.find_elements(By.CLASS_NAME, "c-CollectionCard__link")
-
-pole_ids = [(id.get_attribute("title"), id) for id in poles]
-
-# pole_ids.sort(key=lambda x: x[0])
+    return missing
 
 
-# Iterate through poles, update status
-for id in pole_ids:
-    next_pole = driver.find_element(By.XPATH, "//span[@title='" + id[0] + "']")
-    next_pole.click()
+def debug(id):
+    try:
+        tip = driver.find_element(
+            By.XPATH,
+            "//div[@title='Tip']"
+            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+            "//input"
+        )
+    except:
+        print("Tip")
+    else:
+        print(tip.get_attribute("value"))
 
+
+def print_output(missing_data_dict):
+    for pole_id, fields in missing_data_dict.items():
+        print(f"{pole_id}:")
+        for field in fields:
+            print(f"{field}")
+        print(" ")
+# ────────────────────── Main Script ─────────────────────────
+
+
+def main():
+
+    print("START")
+
+    driver.get("https://office.ikegps.com/#/login")
+
+    # Locate and click Login button
     WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-        (By.CLASS_NAME, "c-MultiListInput__button")))
+        (By.CLASS_NAME, "mdl-button--raised")))
 
-    # Check current status
-    status_label = driver.find_element(
-        By.CLASS_NAME, "c-MultiListInput__button")
+    login_button = driver.find_element(
+        By.CLASS_NAME, "mdl-button--raised")
 
-    current_status = status_label.text
-    print(current_status)
+    login_button.click()
 
-    if current_status.__contains__("Delivery") != True:
-        # Click status bar
-        status_bar = driver.find_element(
-            By.CLASS_NAME, "c-MultiListInput__button")
-        status_bar.click()
+    # Insert username/password
+    username_input = driver.find_element(
+        By.CLASS_NAME, "input")
 
-        # Generate a list of status'
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-            (By.CLASS_NAME, "c-MultiListChooser__groupSelect")))
+    username_input.send_keys(username + Keys.ENTER)
 
-        status_options = driver.find_elements(
-            By.CLASS_NAME, "c-MultiListChooser__groupSelect")
+    password_input = driver.find_element(
+        By.NAME, "password")
 
-        status_list = [(status.get_attribute("id"), status)
-                       for status in status_options]
+    password_input.send_keys(password + Keys.ENTER)
 
-        # Select 'Delivery' status using index from status_list
-        delivery = driver.find_element(
-            By.XPATH, "//div[@id='" + status_list[12][0] + "']")
+    # Locate and select Project
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, "//span[@title='" + target + "']")))
 
-        delivery.click()
+    project = driver.find_element(By.XPATH, "//span[@title='" + target + "']")
 
-        # Select 'Ok' and save changes
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-            (By.CLASS_NAME, "c-Modal-Actions__Ok")))
+    project.click()
 
-        ok_button = driver.find_element(
-            By.CLASS_NAME, "c-Modal-Actions__Ok")
-        ok_button.click()
+    actions.send_keys(Keys.TAB * 2)
+    actions.send_keys(Keys.ENTER)
+    actions.perform()
 
-        actions.key_down(Keys.CONTROL).send_keys(
-            "s").key_up(Keys.CONTROL).perform()
+    # Create list of pole IDs and sort in ascending order
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.CLASS_NAME, "c-CollectionCard__link")))
 
-        time.sleep(2)
+    poles = driver.find_elements(By.CLASS_NAME, "c-CollectionCard__link")
+
+    pole_ids = [pole.get_attribute("title") for pole in poles]
+
+    pole_ids.sort(key=lambda x: x[0])
+
+    # Iterate through poles, check for missing fields and add them to output dict
+    missing_data = {}
+
+    for id in pole_ids:
+
+        next_pole = driver.find_element(
+            By.XPATH, "//span[@title='" + id + "']")
+
+        next_pole.click()
+
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element(
+            (By.CLASS_NAME, "c-CollectionEditTitle__Text"), id))
+
+        missing = check_for_empty_fields(id)
+
+        if missing:
+            missing_data[id] = missing
+
+        debug(id)
+
+    print_output(missing_data)
+
+    print("FINISH")
+    driver.quit()
 
 
-time.sleep(10)
-
-print("FICNISH")
-driver.quit()
+main()
