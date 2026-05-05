@@ -17,11 +17,51 @@ username = os.getenv("IKE_USERNAME")
 password = os.getenv("IKE_PASSWORD")
 
 # ──────────────── Project name being targeted ────────────────
-target = "TTV-CVG v3"
+target = os.getenv("JOB_NAME")
 
 
 # ─── Configuration for check_for_empty_fields() function ────────────────
-check_fields = {
+check_fields = [
+    "pole_id",
+    "pole_type",
+    "tip",
+    "latitude",
+    "longtitude",
+    "mf_hdw",
+    "ms_height",
+    "ms_clearance"
+]
+
+# Locators to identify elements on page
+xpath_locators = {
+    "pole_id": "//div[contains(@class,'c-Input--id') and contains(@class,'is-dirty')]"
+    "//input",
+    "pole_type": "//div[@title='Type']"
+    "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
+    "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+    "//span[contains(@class,'c-MultiListInput__label')]",
+    "tip": "//div[@title='Tip']"
+    "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+    "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+    "//input",
+    "latitude": "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
+    "//input",
+    "longtitude": "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
+    "//input",
+    "mf_hdw": "//div[@title='M/F Hdw.']"
+    "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+    "//div[contains(@class,'is-dirty')]"
+    "//textarea",
+    "ms_height": "//div[contains(@class,'c-SubFormInstance')]"
+    "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
+    "//div[@title='Mid Span Height']"
+    "/following-sibling::div"
+    "//div[contains(@class,'c-PMLink')]",
+    "ms_clearance": "//div[contains(@class,'c-SubFormInstance')]"
+    "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
+    "//div[@title='MS Clearance ']"
+    "/following-sibling::div"
+    "//div[contains(@class,'c-PMLink')]"
 
 }
 
