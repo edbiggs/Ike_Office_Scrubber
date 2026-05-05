@@ -13,6 +13,7 @@ import time
 
 # ──────────────── Login credentials ────────────────
 load_dotenv()
+
 username = os.getenv("IKE_USERNAME")
 password = os.getenv("IKE_PASSWORD")
 
@@ -32,39 +33,6 @@ check_fields = [
     "ms_clearance"
 ]
 
-# Locators to identify elements on page
-xpath_locators = {
-    "pole_id": "//div[contains(@class,'c-Input--id') and contains(@class,'is-dirty')]"
-    "//input",
-    "pole_type": "//div[@title='Type']"
-    "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
-    "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-    "//span[contains(@class,'c-MultiListInput__label')]",
-    "tip": "//div[@title='Tip']"
-    "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-    "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-    "//input",
-    "latitude": "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
-    "//input",
-    "longtitude": "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
-    "//input",
-    "mf_hdw": "//div[@title='M/F Hdw.']"
-    "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-    "//div[contains(@class,'is-dirty')]"
-    "//textarea",
-    "ms_height": "//div[contains(@class,'c-SubFormInstance')]"
-    "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
-    "//div[@title='Mid Span Height']"
-    "/following-sibling::div"
-    "//div[contains(@class,'c-PMLink')]",
-    "ms_clearance": "//div[contains(@class,'c-SubFormInstance')]"
-    "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
-    "//div[@title='MS Clearance ']"
-    "/following-sibling::div"
-    "//div[contains(@class,'c-PMLink')]"
-
-}
-
 
 # ChromeDriver and Selenium variables
 service = Service(ChromeDriverManager().install())
@@ -72,6 +40,103 @@ driver = webdriver.Chrome(service=service)
 
 actions = ActionChains(driver)
 
+
+# Locators to identify elements on page
+xpath_map = {
+    "pole_id": driver.find_element(
+        By.XPATH,
+        "//div[@title='ID']"
+        "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'is-dirty')]"
+        "//textarea"
+    ).get_attribute("value"),
+    "pole_type": driver.find_element(
+        By.XPATH,
+        "//div[@title='Type']"
+        "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//span[contains(@class,'c-MultiListInput__label')]"
+    ).text,
+    "tip": driver.find_element(
+        By.XPATH,
+        "//div[@title='Tip']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+        "//input"
+    ).get_attribute("value"),
+    "latitude": driver.find_element(
+        By.XPATH,
+        "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
+        "//input"
+    ).get_attribute("value"),
+    "longtitude": driver.find_element(
+        By.XPATH,
+        "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
+        "//input"
+    ).get_attribute("value"),
+    "mf_hdw": driver.find_element(
+        By.XPATH,
+        "//div[@title='M/F Hdw.']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'is-dirty')]"
+        "//textarea"
+    ).get_attribute("value"),
+    "ms_height": driver.find_element(
+        By.XPATH,
+        "//div[contains(@class,'c-SubFormInstance')]"
+        "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
+        "//div[@title='Mid Span Height']"
+        "/following-sibling::div"
+        "//div[contains(@class,'c-PMLink')]"
+    ).text,
+    "ms_clearance": driver.find_element(
+        By.XPATH,
+        "//div[contains(@class,'c-SubFormInstance')]"
+        "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
+        "//div[@title='MS Clearance ']"
+        "/following-sibling::div"
+        "//div[contains(@class,'c-PMLink')]"
+    ).text
+
+}
+
+
+class PolePage():
+
+    def __init__(
+            self,
+            pole_id,
+            pole_type,
+            tip,
+            latitude,
+            longitude,
+            mf_hdw,
+            ms_height,
+            ms_clearance
+        ):
+            self.pole_id = pole_id
+            self.pole_type = pole_type
+            self.tip = tip
+            self.latitude = latitude
+            self.longitude = longitude
+            self.mf_hdw = mf_hdw
+            self.ms_height = ms_height
+            self.ms_clearance = ms_clearance
+
+
+def check_empty_fields_class(id):
+    missing2 = []
+
+    for field in check_fields:
+
+        if field in xpath_map:
+            try:
+                id.field = xpath_map[field]
+            except:
+                missing2.append(field)
+
+    return missing2
 
 def check_for_empty_fields(id):
 
@@ -268,6 +333,8 @@ def main():
             missing_data[id] = missing
 
         # debug(id)
+
+        check_empty_fields_class(id)
 
     generate_output(missing_data)
 
