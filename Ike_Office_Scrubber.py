@@ -80,8 +80,11 @@ def check_for_empty_fields(id):
     try:
         pole_id = driver.find_element(
             By.XPATH,
-            "//div[contains(@class,'c-Input--id') and contains(@class,'is-dirty')]"
-            "//input"
+            "//div[@title='ID']"
+            "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
+            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+            "//div[contains(@class,'is-dirty')]"
+            "//textarea"
         ).get_attribute("value")
     except:
         pole_id = None
