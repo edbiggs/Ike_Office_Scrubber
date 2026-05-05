@@ -22,11 +22,7 @@ target = "TTV-CVG v3"
 
 # ─── Configuration for check_for_empty_fields() function ────────────────
 check_fields = {
-    "pole": ["ID", "Type", "Owner", "Location"],
-    "equipment": ["Type", "Attachment Height"],
-    "span": ["Span Length", "Type"],
-    "power_circuit": ["Type", "Primary Conductor", "Primary Framing"],
-    "communication": ["Size", "Owner", "Attachment Height"],
+
 }
 
 
@@ -45,8 +41,10 @@ def check_for_empty_fields(id):
         pole_id = driver.find_element(
             By.XPATH,
             "//div[contains(@class,'c-Input--id') and contains(@class,'is-dirty')]"
-        )
+            "//input"
+        ).get_attribute("value")
     except:
+        pole_id = None
         missing.append("Pole ID")
 
     try:
@@ -56,8 +54,9 @@ def check_for_empty_fields(id):
             "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
             "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
             "//span[contains(@class,'c-MultiListInput__label')]"
-        )
+        ).text
     except:
+        pole_type = None
         missing.append("Pole Type")
 
     try:
@@ -66,9 +65,31 @@ def check_for_empty_fields(id):
             "//div[@title='Tip']"
             "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
             "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-        )
+            "//input"
+        ).get_attribute("value")
     except:
+        tip = None
         missing.append("Tip")
+
+    try:
+        latitude = driver.find_element(
+            By.XPATH,
+            "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
+            "//input"
+        ).get_attribute("value")
+    except:
+        latitude = None
+        missing.append("Latitude")
+
+    try:
+        longitude = driver.find_element(
+            By.XPATH,
+            "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
+            "//input"
+        ).get_attribute("value")
+    except:
+        longitude = None
+        missing.append("Longitude")
 
     try:
         ms_height = driver.find_element(
@@ -78,8 +99,9 @@ def check_for_empty_fields(id):
             "//div[@title='Mid Span Height']"
             "/following-sibling::div"
             "//div[contains(@class,'c-PMLink')]"
-        )
+        ).text
     except:
+        ms_height = None
         missing.append("Mid Span Height")
 
     try:
@@ -90,8 +112,9 @@ def check_for_empty_fields(id):
             "//div[@title='MS Clearance ']"
             "/following-sibling::div"
             "//div[contains(@class,'c-PMLink')]"
-        )
+        ).text
     except:
+        ms_clearance = None
         missing.append("MS Clearance")
 
     return missing
@@ -99,27 +122,37 @@ def check_for_empty_fields(id):
 
 def debug(id):
     try:
-        tip = driver.find_element(
+        latitude = driver.find_element(
             By.XPATH,
-            "//div[@title='Tip']"
-            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+            "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
             "//input"
         )
     except:
-        print("Tip")
+        print("Latitude")
     else:
-        print(tip.get_attribute("value"))
+        print(latitude.get_attribute("value"))
+
+    try:
+        longitude = driver.find_element(
+            By.XPATH,
+            "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
+            "//input"
+        )
+    except:
+        print("Longitude")
+    else:
+        print(longitude.get_attribute("value"))
 
 
-def print_output(missing_data_dict):
-    for pole_id, fields in missing_data_dict.items():
+def generate_output(output_dict):
+    for pole_id, fields in output_dict.items():
         print(f"{pole_id}:")
         for field in fields:
             print(f"{field}")
         print(" ")
-# ────────────────────── Main Script ─────────────────────────
 
+
+# ────────────────────── Main Script ─────────────────────────
 
 def main():
 
@@ -187,9 +220,9 @@ def main():
         if missing:
             missing_data[id] = missing
 
-        debug(id)
+        # debug(id)
 
-    print_output(missing_data)
+    generate_output(missing_data)
 
     print("FINISH")
     driver.quit()
