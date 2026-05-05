@@ -92,6 +92,18 @@ def check_for_empty_fields(id):
         missing.append("Longitude")
 
     try:
+        mf_hdw = driver.find_element(
+            By.XPATH,
+            "//div[@title='M/F Hdw.']"
+            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+            "//div[contains(@class,'is-dirty')]"
+            "//textarea"
+        ).get_attribute("value")
+    except:
+        mf_hdw = None
+        missing.append("M/F Hdw.")
+
+    try:
         ms_height = driver.find_element(
             By.XPATH,
             "//div[contains(@class,'c-SubFormInstance')]"
@@ -122,26 +134,18 @@ def check_for_empty_fields(id):
 
 def debug(id):
     try:
-        latitude = driver.find_element(
+        mf_hdw = driver.find_element(
             By.XPATH,
-            "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
-            "//input"
-        )
+            "//div[@title='M/F Hdw.']"
+            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+            "//div[contains(@class,'is-dirty')]"
+            "//textarea"
+        ).get_attribute("value")
     except:
-        print("Latitude")
+        mf_hdw = None
+        print("M/F Hdw.")
     else:
-        print(latitude.get_attribute("value"))
-
-    try:
-        longitude = driver.find_element(
-            By.XPATH,
-            "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
-            "//input"
-        )
-    except:
-        print("Longitude")
-    else:
-        print(longitude.get_attribute("value"))
+        print(mf_hdw)
 
 
 def generate_output(output_dict):
