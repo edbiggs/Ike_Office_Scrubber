@@ -75,6 +75,31 @@ xpath_map = {
         "//input",
         "value"
     ],
+    # Not verified
+    "pla_result": [
+        "//div[@title='PLA Result']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//textarea", "text"
+    ],
+    "pole_tag": [
+        "//div[@title='Pole Tag']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//input[contains(@class,'c-SwitchInput__input')]",
+        "is_selected"
+    ],
+    "facility_id_slider": [
+        "//div[@title='Facility ID']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//input[contains(@class,'c-SwitchInput__input')]",
+        "is_selected"
+    ],
+    "facility_id_text": [
+        "//div[@title='Facility ID Number']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'is-dirty')]"
+        "//textarea",
+        "value"
+    ],
     "mf_hdw": [
         "//div[@title='M/F Hdw.']"
         "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
@@ -138,18 +163,19 @@ def check_for_empty_fields(pole):
 
 def debug(id):
     try:
-        mf_hdw = driver.find_element(
+        ele = driver.find_element(
             By.XPATH,
-            "//div[@title='M/F Hdw.']"
+            "//div[@title='Facility ID Number']"
             "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
             "//div[contains(@class,'is-dirty')]"
-            "//textarea"
-        ).get_attribute("value")
+            "//textarea").get_attribute("value")
     except:
-        mf_hdw = None
-        print("M/F Hdw.")
+        print("N/A")
     else:
-        print(mf_hdw)
+        print("Facility ID: " + str(ele))
+
+
+debug_mode = False
 
 
 def generate_output(output_dict):
@@ -223,14 +249,16 @@ def main():
         WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element(
             (By.CLASS_NAME, "c-CollectionEditTitle__Text"), id))
 
-        output = check_for_empty_fields(id)
+        if debug_mode == True:
+            debug(id)
+        else:
+            output = check_for_empty_fields(id)
 
-        if output:
-            missing_data[id] = output[0]
+            if output:
+                missing_data[id] = output[0]
 
-        # debug(id)
-
-    generate_output(missing_data)
+    if missing_data:
+        generate_output(missing_data)
 
     print("FINISH")
     driver.quit()
