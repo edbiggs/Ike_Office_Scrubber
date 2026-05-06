@@ -104,29 +104,11 @@ xpath_map = {
 class CurrentPage():
     pass
 
-    #     pole_id,
-    #     pole_type,
-    #     tip,
-    #     latitude,
-    #     longitude,
-    #     mf_hdw,
-    #     ms_height,
-    #     ms_clearance
-    # ):
-    #     self.pole_id = pole_id
-    #     self.pole_type = pole_type
-    #     self.tip = tip
-    #     self.latitude = latitude
-    #     self.longitude = longitude
-    #     self.mf_hdw = mf_hdw
-    #     self.ms_height = ms_height
-    #     self.ms_clearance = ms_clearance
 
+def check_for_empty_fields(pole):
+    missing_fields = []
 
-def check_empty_fields_class(pole):
-    missing2 = []
-
-    pole = CurrentPage()
+    pole_info = CurrentPage()
 
     for field in check_fields:
         if field in xpath_map:
@@ -138,115 +120,13 @@ def check_empty_fields_class(pole):
                         "value")
                 elif method == "text":
                     field_value = field_element.text
-                setattr(pole, field_value, xpath_map[field])
+                setattr(pole_info, field, field_value)
+                # print(vars(pole))
             except:
-                missing2.append(field)
+                missing_fields.append(field)
             # else:
-            #     print(field)
 
-    return missing2
-
-
-def check_for_empty_fields(id):
-
-    missing = []
-
-    try:
-        pole_id = driver.find_element(
-            By.XPATH,
-            "//div[@title='ID']"
-            "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
-            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-            "//div[contains(@class,'is-dirty')]"
-            "//textarea"
-        ).get_attribute("value")
-    except:
-        pole_id = None
-        missing.append("Pole ID")
-
-    try:
-        pole_type = driver.find_element(
-            By.XPATH,
-            "//div[@title='Type']"
-            "[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
-            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-            "//span[contains(@class,'c-MultiListInput__label')]"
-        ).text
-    except:
-        pole_type = None
-        missing.append("Pole Type")
-
-    try:
-        tip = driver.find_element(
-            By.XPATH,
-            "//div[@title='Tip']"
-            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-            "//input"
-        ).get_attribute("value")
-    except:
-        tip = None
-        missing.append("Tip")
-
-    try:
-        latitude = driver.find_element(
-            By.XPATH,
-            "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
-            "//input"
-        ).get_attribute("value")
-    except:
-        latitude = None
-        missing.append("Latitude")
-
-    try:
-        longitude = driver.find_element(
-            By.XPATH,
-            "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
-            "//input"
-        ).get_attribute("value")
-    except:
-        longitude = None
-        missing.append("Longitude")
-
-    try:
-        mf_hdw = driver.find_element(
-            By.XPATH,
-            "//div[@title='M/F Hdw.']"
-            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-            "//div[contains(@class,'is-dirty')]"
-            "//textarea"
-        ).get_attribute("value")
-    except:
-        mf_hdw = None
-        missing.append("M/F Hdw.")
-
-    try:
-        ms_height = driver.find_element(
-            By.XPATH,
-            "//div[contains(@class,'c-SubFormInstance')]"
-            "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
-            "//div[@title='Mid Span Height']"
-            "/following-sibling::div"
-            "//div[contains(@class,'c-PMLink')]"
-        ).text
-    except:
-        ms_height = None
-        missing.append("Mid Span Height")
-
-    try:
-        ms_clearance = driver.find_element(
-            By.XPATH,
-            "//div[contains(@class,'c-SubFormInstance')]"
-            "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
-            "//div[@title='MS Clearance ']"
-            "/following-sibling::div"
-            "//div[contains(@class,'c-PMLink')]"
-        ).text
-    except:
-        ms_clearance = None
-        missing.append("MS Clearance")
-
-    return missing
+    return [missing_fields, pole_info]
 
 
 def debug(id):
@@ -323,7 +203,7 @@ def main():
 
     pole_ids.sort(key=lambda x: x[0])
 
-    # Iterate through poles, check for missing fields and add them to output dict
+    # Iterate through poles, check for missing_fields fields and add them to output dict
     missing_data = {}
 
     for id in pole_ids:
@@ -336,10 +216,10 @@ def main():
         WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element(
             (By.CLASS_NAME, "c-CollectionEditTitle__Text"), id))
 
-        missing = check_empty_fields_class(id)
+        output = check_for_empty_fields(id)
 
-        if missing:
-            missing_data[id] = missing
+        if output:
+            missing_data[id] = output[0]
 
         # debug(id)
 
