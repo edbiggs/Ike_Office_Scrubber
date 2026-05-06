@@ -227,7 +227,7 @@ class CurrentPage():
         self.ms_clearance = None
 
 
-def check_for_empty_fields(pole):
+def check_fields(pole):
     missing_fields = []
 
     pole_info = CurrentPage()
@@ -325,7 +325,7 @@ def main():
         if debug_mode == True:
             debug(id)
         else:
-            output = check_for_empty_fields(id)
+            output = check_fields(id)
 
             if output:
                 missing_data[id] = output[0]
