@@ -121,10 +121,8 @@ def check_for_empty_fields(pole):
                 elif method == "text":
                     field_value = field_element.text
                 setattr(pole_info, field, field_value)
-                # print(vars(pole))
             except:
                 missing_fields.append(field)
-            # else:
 
     return [missing_fields, pole_info]
 
