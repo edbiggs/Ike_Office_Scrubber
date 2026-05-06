@@ -85,13 +85,13 @@ xpath_map = {
         "//div[@title='Pole Tag']"
         "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
         "//input[contains(@class,'c-SwitchInput__input')]",
-        "is_selected"
+        "slider"
     ],
     "facility_id_slider": [
         "//div[@title='Facility ID']"
         "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
         "//input[contains(@class,'c-SwitchInput__input')]",
-        "is_selected"
+        "slider"
     ],
     "facility_id_text": [
         "//div[@title='Facility ID Number']"
@@ -106,6 +106,72 @@ xpath_map = {
         "//div[contains(@class,'is-dirty')]"
         "//textarea",
         "value"
+    ],
+    "anchor_count": [
+        "//div[@title='Anchor']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'is-dirty')]"
+        "//textarea",
+        "value"
+    ],
+    "riser_count": [
+        "//div[@title='Riser']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'is-dirty')]"
+        "//textarea",
+        "value"
+    ],
+    "splice_point_slider": [
+        "//div[@title='Splice Point']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//input[contains(@class,'c-SwitchInput__input')]",
+        "slider"
+    ],
+    # Not verified
+    "splice_type": [
+        "//div[@title='Splice Type']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'is-dirty')]"
+        "//textarea",
+        "value"
+    ],
+    "slack_loop": [
+        "//div[@title='Slack Loop']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//input[contains(@class,'c-SwitchInput__input')]",
+        "slider"
+    ],
+    "storage_type": [
+        "//div[@title='Storage Type']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'is-dirty')]"
+        "//textarea",
+        "value"
+    ],
+    # Not verified
+    "strand": [
+        "//div[@title='Strand']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//textarea",
+        "value"
+    ],
+    "vault": [
+        "//div[@title='Vault']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//input[contains(@class,'c-SwitchInput__input')]",
+        "slider"
+    ],
+    "guys": [
+        "//div[@title='Guys']"
+        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+        "//div[contains(@class,'is-dirty')]"
+        "//textarea",
+        "value"
+    ],
+    "anchor_subsection_count": [
+        "//div[contains(@class,'c-SubForm__TitleName') and @title='Anchor']"
+        "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
+        "text"
     ],
     "ms_height": [
         "//div[contains(@class,'c-SubFormInstance')]"
@@ -124,6 +190,28 @@ xpath_map = {
         "text"
     ],
 }
+
+# ──────────────── Debug Mode ────────────────
+
+
+def debug(id):
+    try:
+        ele = driver.find_element(
+            By.XPATH,
+            "//div[@title='Guys']"
+            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+            "//div[contains(@class,'is-dirty')]"
+            "//textarea").get_attribute("value")
+    except:
+        print("N/A")
+    else:
+        print("Guys: " + str(ele))
+
+
+debug_mode = True
+
+
+# ──────────────────────────────────────────────
 
 
 class CurrentPage():
@@ -146,36 +234,21 @@ def check_for_empty_fields(pole):
 
     for field in check_fields:
         if field in xpath_map:
-            xpath, method = xpath_map[field]
+            xpath, data_type = xpath_map[field]
             try:
                 field_element = driver.find_element(By.XPATH, xpath)
-                if method == "value":
+                if data_type == "value":
                     field_value = field_element.get_attribute(
                         "value")
-                elif method == "text":
+                elif data_type == "text":
                     field_value = field_element.text
+                elif data_type == "slider":
+                    field_value = field_element.is_selected()
                 setattr(pole_info, field, field_value)
             except:
                 missing_fields.append(field)
 
     return [missing_fields, pole_info]
-
-
-def debug(id):
-    try:
-        ele = driver.find_element(
-            By.XPATH,
-            "//div[@title='Facility ID Number']"
-            "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-            "//div[contains(@class,'is-dirty')]"
-            "//textarea").get_attribute("value")
-    except:
-        print("N/A")
-    else:
-        print("Facility ID: " + str(ele))
-
-
-debug_mode = False
 
 
 def generate_output(output_dict):
