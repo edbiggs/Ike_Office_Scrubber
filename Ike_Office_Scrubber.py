@@ -70,7 +70,7 @@ xpath_map = {
         "//input",
         "value"
     ],
-    "longtitude": [
+    "longitude": [
         "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
         "//input",
         "value"
@@ -102,7 +102,16 @@ xpath_map = {
 
 
 class CurrentPage():
-    pass
+
+    def __init__(self):
+        self.pole_id = None
+        self.pole_type = None
+        self.tip = None
+        self.latitude = None
+        self.longitude = None
+        self.mf_hdw = None
+        self.ms_height = None
+        self.ms_clearance = None
 
 
 def check_for_empty_fields(pole):
