@@ -27,8 +27,22 @@ check_fields = [
     "pole_type",
     "tip",
     "latitude",
-    "longtitude",
+    "longitude",
+    "pla_result",
+    "pole_tag",
+    "facility_id_slider",
+    "facility_id_text",
     "mf_hdw",
+    "anchor_count",
+    "riser_count",
+    "splice_point_slider",
+    "splice_type",
+    "slack_loop",
+    "storage_type",
+    "strand",
+    "vault",
+    "guys",
+    "anchor_subsection_count",
     "ms_height",
     "ms_clearance"
 ]
@@ -194,7 +208,7 @@ xpath_map = {
 # ──────────────── Debug Mode ────────────────
 
 
-def debug(id):
+def debug(pole_id):
     try:
         ele = driver.find_element(
             By.XPATH,
@@ -203,9 +217,9 @@ def debug(id):
             "//div[contains(@class,'is-dirty')]"
             "//textarea").get_attribute("value")
     except:
-        print("N/A")
+        print(pole_id + ": N/A")
     else:
-        print("Guys: " + str(ele))
+        print(pole_id + ": Guys: " + str(ele))
 
 
 debug_mode = True
@@ -241,10 +255,10 @@ class CurrentPage():
         self.ms_clearance = None
 
 
-def check_missing_fields(pole):
+def check_missing_fields(pole_id):
     missing_fields = []
 
-    pole_info = CurrentPage()
+    pole_id = CurrentPage()
 
     for field in check_fields:
         if field in xpath_map:
@@ -256,16 +270,14 @@ def check_missing_fields(pole):
                         "value")
                 elif data_type == "text":
                     field_value = field_element.text
-                elif data_type == "slider":
-                    field_value = field_element.is_selected()
-                setattr(pole_info, field, field_value)
+                setattr(pole_id, field, field_value)
             except:
                 missing_fields.append(field)
 
-    return [missing_fields, pole_info]
+    return [missing_fields, pole_id]
 
 
-def generate_output(output_dict):
+def generate_missing_fields_report(output_dict):
     for pole_id, fields in output_dict.items():
         print(f"{pole_id}:")
         for field in fields:
@@ -313,7 +325,7 @@ def main():
     actions.send_keys(Keys.ENTER)
     actions.perform()
 
-    # Create list of pole IDs and sort in ascending order
+    # Generate list of pole IDs and sort in ascending order
     WebDriverWait(driver, 10).until(EC.presence_of_element_located(
         (By.CLASS_NAME, "c-CollectionCard__link")))
 
@@ -326,26 +338,26 @@ def main():
     # Iterate through poles, check for missing_fields fields and add them to output dict
     missing_data = {}
 
-    for id in pole_ids:
+    for pole_id in pole_ids:
 
         next_pole = driver.find_element(
-            By.XPATH, "//span[@title='" + id + "']")
+            By.XPATH, "//span[@title='" + pole_id + "']")
 
         next_pole.click()
 
         WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element(
-            (By.CLASS_NAME, "c-CollectionEditTitle__Text"), id))
+            (By.CLASS_NAME, "c-CollectionEditTitle__Text"), pole_id))
 
         if debug_mode == True:
-            debug(id)
+            debug(pole_id)
         else:
-            output = check_missing_fields(id)
+            output = check_missing_fields(pole_id)
 
             if output:
-                missing_data[id] = output[0]
+                missing_data[pole_id] = output[0]
 
     if missing_data:
-        generate_output(missing_data)
+        generate_missing_fields_report(missing_data)
 
     print("FINISH")
     driver.quit()
