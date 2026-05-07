@@ -222,12 +222,26 @@ class CurrentPage():
         self.tip = None
         self.latitude = None
         self.longitude = None
+        self.pla_result = None
+        self.pole_tag = None
+        self.facility_id_slider = None
+        self.facility_id_text = None
         self.mf_hdw = None
+        self.anchor_count = None
+        self.riser_count = None
+        self.splice_point_slider = None
+        self.splice_type = None
+        self.slack_loop = None
+        self.storage_type = None
+        self.strand = None
+        self.vault = None
+        self.guys = None
+        self.anchor_subsection_count = None
         self.ms_height = None
         self.ms_clearance = None
 
 
-def check_fields(pole):
+def check_missing_fields(pole):
     missing_fields = []
 
     pole_info = CurrentPage()
@@ -325,7 +339,7 @@ def main():
         if debug_mode == True:
             debug(id)
         else:
-            output = check_fields(id)
+            output = check_missing_fields(id)
 
             if output:
                 missing_data[id] = output[0]
