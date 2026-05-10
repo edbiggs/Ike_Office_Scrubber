@@ -13,6 +13,8 @@ import CurrentPole
 
 
 load_dotenv()
+
+
 class ScraperTools():
 
     def __init__(self):
@@ -179,21 +181,8 @@ class ScraperTools():
         "tip",
         "latitude",
         "longitude",
-        "pla_result",
         "pole_tag",
-        "facility_id_slider",
-        "facility_id_text",
         "mf_hdw",
-        "anchor_count",
-        "riser_count",
-        "splice_point_slider",
-        "splice_type",
-        "slack_loop",
-        "storage_type",
-        "strand",
-        "vault",
-        "guys",
-        "anchor_subsection_count",
         "ms_height",
         "ms_clearance"
     ]
@@ -284,18 +273,16 @@ class ScraperTools():
                 print(f"{field}")
             print(" ")
 
-    def debug(self, pole_id):
+    def debug(self, debug_field_name, debug_xpath, debug_data_type, pole_id):
         try:
             ele = self.driver.find_element(
-                By.XPATH,
-                "//div[@title='Guys']"
-                "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-                "//div[contains(@class,'is-dirty')]"
-                "//textarea").get_attribute("value")
+                By.XPATH, debug_xpath)
+            if debug_data_type == "value":
+                ele = ele.get_attribute(
+                    "value")
+            elif debug_data_type == "text":
+                ele = ele.text
         except:
-            print(pole_id + ": N/A")
+            print(pole_id + ": " + debug_field_name + ": N/A")
         else:
-            print(pole_id + ": Guys: " + str(ele))
-
-
-  
+            print(pole_id + ": " + debug_field_name + ": " + str(ele))
