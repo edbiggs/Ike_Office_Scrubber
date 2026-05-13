@@ -11,6 +11,11 @@ debug_xpath = ("//div[@title='Reel ID']"
                "//textarea")
 debug_data_type = "value"
 
+# ──────────────── Config ────────────────
+
+reel_id_insertion = False
+reel_id_file = "ttv_cvg_reel_ids.csv"
+
 # ────────────────────── Main Script ─────────────────────────
 
 
@@ -38,10 +43,12 @@ def main():
                               debug_data_type, pole_id)
             except:
                 print("Debug configuration error: Check debug variables")
+        elif reel_id_insertion == True:
+            scraper.create_reel_id_map()
+            scraper.insert_reel_id(pole_id)
         else:
             pass
             # scraper.get_field_data(pole_id)
-            scraper.insert_reel_id(pole_id)
 
     if output:
         scraper.generate_missing_fields_report(output)
