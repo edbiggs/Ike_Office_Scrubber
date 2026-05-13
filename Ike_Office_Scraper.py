@@ -1,17 +1,14 @@
-import time
 import ScraperTools
 
 
 # ──────────────── Debug Mode ────────────────
 
-debug_mode = True
+debug_mode = False
 
-debug_field_name = "Pole ID"
-debug_xpath = "//div[@title='ID']"
-"[not(ancestor::div[contains(@class,'c-SubFormInstance')])]"
-"/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-"//div[contains(@class,'is-dirty')]"
-"//textarea"
+debug_field_name = "Reel ID"
+debug_xpath = ("//div[@title='Reel ID']"
+               "/following-sibling::div[contains(@class, 'c-CollectionField__Value')]"
+               "//textarea")
 debug_data_type = "value"
 
 # ────────────────────── Main Script ─────────────────────────
@@ -42,10 +39,9 @@ def main():
             except:
                 print("Debug configuration error: Check debug variables")
         else:
-            missing_fields, page = scraper.check_missing_fields(pole_id)
-
-            if missing_fields:
-                output[pole_id] = missing_fields
+            pass
+            # scraper.get_field_data(pole_id)
+            scraper.insert_reel_id(pole_id)
 
     if output:
         scraper.generate_missing_fields_report(output)
