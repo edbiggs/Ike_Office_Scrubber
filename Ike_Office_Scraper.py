@@ -13,6 +13,8 @@ debug_data_type = "value"
 
 # ──────────────── Config ────────────────
 
+data_extraction = True
+
 reel_id_insertion = False
 reel_id_file = "ttv_cvg_reel_ids.csv"
 
@@ -31,8 +33,6 @@ def main():
 
     scraper.get_project()
 
-    output = {}
-
     for pole_id in scraper.get_pole_id_list():
 
         scraper.get_next_pole(pole_id)
@@ -46,12 +46,8 @@ def main():
         elif reel_id_insertion == True:
             scraper.create_reel_id_map()
             scraper.insert_reel_id(pole_id)
-        else:
-            pass
-            # scraper.get_field_data(pole_id)
-
-    if output:
-        scraper.generate_missing_fields_report(output)
+        elif data_extraction == True:
+            scraper.get_field_data(pole_id)
 
     print("FINISH")
     scraper.driver.quit()
