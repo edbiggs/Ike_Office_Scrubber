@@ -36,7 +36,6 @@ class ScraperTools():
         "no_changes": {
             "xpath": "//a[@title='No changes']",
             "data type": "slider",
-            "section": "main",
             "subform": None,
         },
         "pole_id": {
@@ -46,7 +45,6 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "pole_type": {
@@ -55,7 +53,6 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "section": "main",
             "subform": None,
         },
         "tip": {
@@ -64,21 +61,18 @@ class ScraperTools():
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "latitude": {
             "xpath": "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "longitude": {
             "xpath": "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         # Not verified
@@ -87,7 +81,6 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//textarea",
             "data type": "text",
-            "section": "main",
             "subform": None,
         },
         "pole_tag": {
@@ -95,7 +88,6 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "section": "main",
             "subform": None,
         },
         "facility_id_slider": {
@@ -103,7 +95,6 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "section": "main",
             "subform": None,
         },
         "facility_id_text": {
@@ -112,7 +103,6 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "mf_hdw": {
@@ -121,7 +111,6 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "anchor_count": {
@@ -130,7 +119,6 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "riser_count": {
@@ -139,7 +127,6 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "splice_point_slider": {
@@ -147,7 +134,6 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "section": "main",
             "subform": None,
         },
         # Not verified
@@ -157,7 +143,6 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "slack_loop": {
@@ -165,7 +150,6 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "section": "main",
             "subform": None,
         },
         "storage_type": {
@@ -174,7 +158,6 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         # Not verified
@@ -183,7 +166,6 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "vault": {
@@ -191,336 +173,315 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "section": "main",
             "subform": None,
         },
-        "reel id": {
+        "reel_id": {
             "xpath": "//div[@title='Reel ID']"
                      "/following-sibling::div[contains(@class, 'c-CollectionField__Value')]"
                      "//textarea",
             "data type": "value",
-            "section": "main",
             "subform": None,
         },
         "equipment_subform_count": {
             "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Equipment']"
                      "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
             "data type": "text",
-            "section": "main",
-            "subform": None,
-        },
-        "equipment_type": {
-            "xpath": "//div[contains(@id,'ipf_equipmentType')]"
+            "subform": {
+                "equipment_type": {
+                    "xpath": "//div[contains(@id,'ipf_equipmentType')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
+                    "data type": "text",
+                    "subform": None,
+                },
+                "equipment_orientation": {
+                    "xpath": "//div[contains(@id,'ipf_equipmentOrientation')]"
+                    "//div[contains(@class,'c-Input--is-dirty')]"
+                    "//input",
+                    "data type": "value",
+                    "subform": None,
+                },
+                "equipment_attachment_height_ft": {
+                    "xpath": "//div[contains(@id,'ipf_equipmentAttachmentHeight')]"
+                    "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+                    "//input",
+                    "data type": "value",
+                    "subform": None,
+                },
+                "equipment_attachment_height_in": {
+                    "xpath": "//div[contains(@id,'ipf_equipmentAttachmentHeight')]"
+                    "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
+                    "//input",
+                    "data type": "value",
+                    "subform": None
+                }
+            }
+        },
+        "anchor_subform_count": {
+            "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Anchor']"
+                     "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
             "data type": "text",
-            "section": "equipment",
-            "subform": None,
-        },
-        "equipment_orientation": {
-            "xpath": "//div[contains(@id,'ipf_equipmentOrientation')]"
-                     "//div[contains(@class,'c-Input--is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "equipment",
-            "subform": None,
-        },
-        "equipment_attachment_height_ft": {
-            "xpath": "//div[contains(@id,'ipf_equipmentAttachmentHeight')]"
-                     "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "equipment",
-            "subform": None,
-        },
-        "equipment_attachment_height_in": {
-            "xpath": "//div[contains(@id,'ipf_equipmentAttachmentHeight')]"
-                     "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "equipment",
-            "subform": None,
-        },
-        "anchor_lead_length_ft": {
-            "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
+            "subform": {
+                "anchor_lead_length_ft": {
+                    "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
                      "//div[contains(@class,'c-VectorInput__leftInput')]"
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
-            "data type": "value",
-            "section": "anchor",
-            "subform": None,
-        },
-        "anchor_lead_length_in": {
-            "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
-                     "//div[contains(@class,'c-VectorInput__leftInput')]"
-                     "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "anchor",
-            "subform": None,
-        },
-        "anchor_lead_orientation": {
-            "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
-                     "//div[contains(@class,'c-Input--bearing') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "anchor",
-            "subform": None,
-        },
-        "guy_count": {
-            "xpath": "//div[@title='Guys']"
-                     "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-                     "//div[contains(@class,'is-dirty')]"
-                     "//textarea",
-            "data type": "value",
-            "section": "main",
-            "subform": None,
-        },
-        "guy_size": {
-            "xpath": "//div[contains(@id,'ipf_anchorGuySize')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "anchor",
-            "subform": "guy",
-        },
-        "guy_attachment_height_ft": {
-            "xpath": "//div[contains(@id,'ipf_anchorGuyAttachmentHeight')]"
-                     "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "anchor",
-            "subform": "guy",
-        },
-        "guy_attachment_height_in": {
-            "xpath": "//div[contains(@id,'ipf_anchorGuyAttachmentHeight')]"
-                     "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "anchor",
-            "subform": "guy",
+                    "data type": "value",
+                    "subform": None,
+                },
+                "anchor_lead_length_in": {
+                    "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
+                    "//div[contains(@class,'c-VectorInput__leftInput')]"
+                    "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
+                    "//input",
+                    "data type": "value",
+                    "subform": None,
+                },
+                "anchor_lead_orientation": {
+                    "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
+                    "//div[contains(@class,'c-Input--bearing') and contains(@class,'is-dirty')]"
+                    "//input",
+                    "data type": "value",
+                    "subform": None,
+                },
+                "guy_subform_count": {
+                    "xpath": "//div[@title='Guys']"
+                    "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+                    "//div[contains(@class,'is-dirty')]"
+                    "//textarea",
+                    "data type": "value",
+                    "subform": {
+                        "guy_size": {
+                            "xpath": "//div[contains(@id,'ipf_anchorGuySize')]"
+                            "//span[contains(@class,'c-MultiListInput__label')]",
+                            "data type": "text",
+                            "subform": None,
+                        },
+                        "guy_attachment_height_ft": {
+                            "xpath": "//div[contains(@id,'ipf_anchorGuyAttachmentHeight')]"
+                            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                        "guy_attachment_height_in": {
+                            "xpath": "//div[contains(@id,'ipf_anchorGuyAttachmentHeight')]"
+                            "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                    }
+                }
+            }
         },
         "span_subform_count": {
             "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Span']"
                      "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
             "data type": "text",
-            "section": "main",
-            "subform": None,
-        },
-        "communication_mid_span_height": {
-            "xpath": "//div[contains(@id,'ipf_spanCommunicationMidSpanHeight')]"
-                     "//div[contains(@class,'c-PMLink')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "communication_size": {
-            "xpath": "//div[contains(@id,'ipf_spanCommunicationSize')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "communication_owner": {
-            "xpath": "//div[contains(@id,'ipf_spanCommunicationOwner')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "communication_horizontal_offset": {
-            "xpath": "//div[contains(@id,'ipf_spanCommunicationHorizOffset')]"
-                     "//div[contains(@class,'c-Input--is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "communication",
-        },
-        # PMLink form — only matches when attachment height is a linked value
-        "communication_attachment_height": {
-            "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
-                     "//div[contains(@class,'c-PMLink') and not(contains(@class,'c-PMLink--inputs'))]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        # Manual ft/in form — only matches when attachment height is hand-entered
-        "communication_attachment_height_ft": {
-            "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
-                     "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "communication",
-        },
-        "communication_attachment_height_in": {
-            "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
-                     "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "communication",
-        },
-        "communication_ms_clearance": {
-            "xpath": "//div[@title='MS Clearance ']"
-                     "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-                     "//div[contains(@class,'c-PMLink')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "communication_midspan_ike_photo": {
-            "xpath": "//div[@title='MidSpan IKE Photo']"
-                     "/following-sibling::div[contains(@class,'c-CollectionField__Value')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "communication_joint_use": {
-            "xpath": "//div[@title='Joint Use']"
-                     "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
-                     "//input[contains(@class,'c-SwitchInput__input')]",
-            "data type": "slider",
-            "section": "span",
-            "subform": "communication",
-        },
-        "ms_height": {
-            "xpath": "//div[contains(@class,'c-SubFormInstance')]"
-                     "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
-                     "//div[@title='Mid Span Height']"
-                     "/following-sibling::div"
-                     "//div[contains(@class,'c-PMLink')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "ms_clearance": {
-            "xpath": "//div[contains(@class,'c-SubFormInstance')]"
-                     "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
-                     "//div[@title='MS Clearance ']"
-                     "/following-sibling::div"
-                     "//div[contains(@class,'c-PMLink')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "span_length": {
-            "xpath": "//div[contains(@id,'ipf_spanLength')]"
+            "subform": {
+                "span_length": {
+                    "xpath": "//div[contains(@id,'ipf_spanLength')]"
                      "//div[contains(@class,'c-Input')]/span",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "span_type": {
-            "xpath": "//div[contains(@id,'ipf_spanType')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "span_mid_span_ike_photo": {
-            "xpath": "//div[contains(@id,'ipf_spanMidSpanIkePhoto')]"
-                     "//div[contains(@class,'c-CollectionField__Value')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "communication",
-        },
-        "power_circuit_type": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitType')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_primary_conductor": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryConductor')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_primary_framing": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryFraming')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_primary_phase_a_height_ft": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseAHeight')]"
-                     "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_primary_phase_a_height_in": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseAHeight')]"
-                     "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_primary_phase_b_height_ft": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseBHeight')]"
-                     "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_primary_phase_b_height_in": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseBHeight')]"
-                     "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_primary_phase_c_height_ft": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseCHeight')]"
-                     "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_primary_phase_c_height_in": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseCHeight')]"
-                     "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_neutral_conductor": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralConductor')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_neutral_framing": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralFraming')]"
-                     "//span[contains(@class,'c-MultiListInput__label')]",
-            "data type": "text",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_neutral_height_ft": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralHeight')]"
-                     "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "power_circuit",
-        },
-        "power_circuit_neutral_height_in": {
-            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralHeight')]"
-                     "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
-                     "//input",
-            "data type": "value",
-            "section": "span",
-            "subform": "power_circuit",
+                    "data type": "text",
+                    "subform": None,
+                },
+                "span_type": {
+                    "xpath": "//div[contains(@id,'ipf_spanType')]"
+                    "//span[contains(@class,'c-MultiListInput__label')]",
+                    "data type": "text",
+                    "subform": None,
+                },
+                "span_mid_span_ike_photo": {
+                    "xpath": "//div[contains(@id,'ipf_spanMidSpanIkePhoto')]"
+                    "//div[contains(@class,'c-CollectionField__Value')]",
+                    "data type": "text",
+                    "subform": None,
+                },
+                "power_circuit_subform_count": {
+                    "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Power Circuit']"
+                    "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
+                    "data type": "text",
+                    "subform": {
+                        "power_circuit_type": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitType')]"
+                            "//span[contains(@class,'c-MultiListInput__label')]",
+                            "data type": "text",
+                            "subform": None,
+                        },
+                        "power_circuit_primary_conductor": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryConductor')]"
+                            "//span[contains(@class,'c-MultiListInput__label')]",
+                            "data type": "text",
+                            "subform": None,
+                        },
+                        "power_circuit_primary_framing": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryFraming')]"
+                            "//span[contains(@class,'c-MultiListInput__label')]",
+                            "data type": "text",
+                            "subform": None,
+                        },
+                        "power_circuit_primary_phase_a_height_ft": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseAHeight')]"
+                            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                        "power_circuit_primary_phase_a_height_in": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseAHeight')]"
+                            "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                        "power_circuit_primary_phase_b_height_ft": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseBHeight')]"
+                            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                        "power_circuit_primary_phase_b_height_in": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseBHeight')]"
+                            "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                        "power_circuit_primary_phase_c_height_ft": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseCHeight')]"
+                            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                        "power_circuit_primary_phase_c_height_in": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseCHeight')]"
+                            "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                        "power_circuit_neutral_conductor": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralConductor')]"
+                            "//span[contains(@class,'c-MultiListInput__label')]",
+                            "data type": "text",
+                            "subform": None,
+                        },
+                        "power_circuit_neutral_framing": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralFraming')]"
+                            "//span[contains(@class,'c-MultiListInput__label')]",
+                            "data type": "text",
+                            "subform": None,
+                        },
+                        "power_circuit_neutral_height_ft": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralHeight')]"
+                            "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        },
+                        "power_circuit_neutral_height_in": {
+                            "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralHeight')]"
+                            "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
+                            "//input",
+                            "data type": "value",
+                            "subform": None,
+                        }
+                    }
+                }
+            },
+            "communication_subform_count": {
+                "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Communication']"
+                "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
+                "data type": "text",
+                "subform": {
+                    "communication_mid_span_height": {
+                        "xpath": "//div[contains(@id,'ipf_spanCommunicationMidSpanHeight')]"
+                        "//div[contains(@class,'c-PMLink')]",
+                        "data type": "text",
+                        "subform": None,
+                    },
+                    "communication_size": {
+                        "xpath": "//div[contains(@id,'ipf_spanCommunicationSize')]"
+                        "//span[contains(@class,'c-MultiListInput__label')]",
+                        "data type": "text",
+                        "subform": None,
+                    },
+                    "communication_owner": {
+                        "xpath": "//div[contains(@id,'ipf_spanCommunicationOwner')]"
+                        "//span[contains(@class,'c-MultiListInput__label')]",
+                        "data type": "text",
+                        "subform": None,
+                    },
+                    "communication_horizontal_offset": {
+                        "xpath": "//div[contains(@id,'ipf_spanCommunicationHorizOffset')]"
+                        "//div[contains(@class,'c-Input--is-dirty')]"
+                        "//input",
+                        "data type": "value",
+                        "subform": None,
+                    },
+                    "communication_attachment_height": {
+                        "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
+                        "//div[contains(@class,'c-PMLink') and not(contains(@class,'c-PMLink--inputs'))]",
+                        "data type": "text",
+                        "subform": None,
+                    },
+                    "communication_attachment_height_ft": {
+                        "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
+                        "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
+                        "//input",
+                        "data type": "value",
+                        "subform": None,
+                    },
+                    "communication_attachment_height_in": {
+                        "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
+                        "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
+                        "//input",
+                        "data type": "value",
+                        "subform": None,
+                    },
+                    "communication_ms_clearance": {
+                        "xpath": "//div[@title='MS Clearance ']"
+                        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+                        "//div[contains(@class,'c-PMLink')]",
+                        "data type": "text",
+                        "subform": None,
+                    },
+                    "communication_midspan_ike_photo": {
+                        "xpath": "//div[@title='MidSpan IKE Photo']"
+                        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]",
+                        "data type": "text",
+                        "subform": None,
+                    },
+                    "communication_joint_use": {
+                        "xpath": "//div[@title='Joint Use']"
+                        "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
+                        "//input[contains(@class,'c-SwitchInput__input')]",
+                        "data type": "slider",
+                        "subform": None,
+                    },
+                    "ms_height": {
+                        "xpath": "//div[contains(@class,'c-SubFormInstance')]"
+                        "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
+                        "//div[@title='Mid Span Height']"
+                        "/following-sibling::div"
+                        "//div[contains(@class,'c-PMLink')]",
+                        "data type": "text",
+                        "subform": None,
+                    },
+                    "ms_clearance": {
+                        "xpath": "//div[contains(@class,'c-SubFormInstance')]"
+                        "[.//span[contains(@class,'c-MultiListInput__label') and contains(text(),'Fiber')]]"
+                        "//div[@title='MS Clearance ']"
+                        "/following-sibling::div"
+                        "//div[contains(@class,'c-PMLink')]",
+                        "data type": "text",
+                        "subform": None,
+                    }
+                }
+            }
         }
     }
 
@@ -579,7 +540,7 @@ class ScraperTools():
 
         next_pole.click()
 
-    def get_data_type(self, element, data_type):
+    def extract_data(self, element, data_type):
         if data_type == "value":
             return element.get_attribute("value")
         elif data_type == "text":
@@ -587,175 +548,62 @@ class ScraperTools():
         elif data_type == "slider":
             return element.is_selected()
 
+    def get_data_recursion(self, field_dict, current_class, subform_level, sub_classes):
+        for field, field_info in field_dict.items():
+            if field_info["subform"] == None:
+                try:
+                    field_element = self.driver.find_element(
+                        By.XPATH, field_info["xpath"])
+                    setattr(current_class, field_element.extract_data(
+                        field_element, field_info["data type"]
+                    ))
+                    print(field_info)
+                except:
+                    return field
+            else:
+                sub_class_key = f"{field} " + str(subform_level)
+                subform_level += 1
+                sub_classes[sub_class_key] = getattr(current_class, f"{field}")
+                current_class = sub_classes[sub_class_key]
+                self.get_data_recursion(
+                    field, field_info["subform"], current_class, subform_level, sub_classes)
+
     def get_field_data(self, pole_id):
         WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(
             (By.CLASS_NAME, "c-CollectionEditTitle__Text"), pole_id))
 
         page = CurrentPole.CurrentPole(pole_id)
 
+        current_class = page
+
+        subform_class = None
+
+        subform_level = 0
+
         missing_fields = []
 
-        processed_fields = []
-
-        for field, info in self.xpath_map.items():
-            print(info["section"], info["subform"], info["xpath"])
-        #     if subform is None:
-        #         try:
-        #             field_element = self.driver.find_element(By.XPATH, xpath)
-        #             setattr(page, field, self.get_data_type(
-        #                 field_element, data_type))
-        #             processed_fields.append(field)
-        #         except:
-        #             missing_fields.append(field)
-        #             processed_fields.append(field)
-        #     else:
-        #         form_count = 0
-        #         parent_form_key = form_info["subform"]
-        #         subforms = [
-        #             name for name, (xpath, dtype, info) in self.xpath_map.items()
-        #             if info["subform"] == parent_form_key
-        #         ]
-
-        #         try:
-        #             field_element = self.driver.find_element(
-        #                 By.XPATH, xpath)
-        #             setattr(page, field + form_count, self.get_data_type(
-        #                 field_element, data_type))
-        #             processed_fields.append(field)
-        #         except:
-        #             missing_fields.append(field)
-        #             processed_fields.append(field)
-        #         for field in subforms:
-        #             try:
-        #                 field_element = self.driver.find_element(
-        #                     By.XPATH, xpath)
-        #                 setattr(page, field, self.get_data_type(
-        #                     field_element, data_type))
-        #                 processed_fields.append(field)
-        #             except:
-        #                 missing_fields.append(field)
-        #                 processed_fields.append(field)
-
-        # for attribute, value in vars(page).items():
-        #     print(f"{attribute}: {value}")
-        # for field in missing_fields:
-        #     print("Missing: " + field)
-
-    def get_subform_instances(self, title, scope=None):
-
-        xpath = (
-            f"//div[contains(@class,'c-SubForm__TitleName') and @title='{title}']"
-            "/ancestor::div[contains(@class,'c-SubForm__Header')]"
-            "/following-sibling::div[contains(@class,'c-SubFormInstance')]"
-        )
-        if scope is not None:
-            return scope.find_elements(By.XPATH, "." + xpath)
-        return self.driver.find_elements(By.XPATH, xpath)
-
-    def to_snake_case(self, name):
-        """PascalCase -> snake_case (PowerCircuit -> 'power_circuit')."""
-        return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
-
-    def subform_title(self, name):
-        """PascalCase -> space-separated title (PowerCircuit -> 'Power Circuit')."""
-        return re.sub(r'(?<!^)(?=[A-Z])', ' ', name)
-
-    def claude_version_get_field_data(self, pole_id):
-        WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(
-            (By.CLASS_NAME, "c-CollectionEditTitle__Text"), pole_id))
-
-        page = CurrentPole.CurrentPole(pole_id)
-        missing_fields = []
-        processed_fields = []
-
-        # Keep WebElement for each top-level instance so Phase C can scope into it.
-        # { "Anchor": [(anchor_obj_1, anchor_el_1), ...], ... }
-        parent_instances = {}
-
-        # ───── Phase A: pole-level fields (subform is None) ─────
-        for field, (xpath, data_type, subform_info) in self.xpath_map.items():
-            if subform_info["subform"] is None:
-                try:
-                    field_element = self.driver.find_element(By.XPATH, xpath)
-                    setattr(page, field, self.get_data_type(
-                        field_element, data_type))
-                except:
-                    missing_fields.append(field)
-                processed_fields.append(field)
-
-        # ───── Phase B: top-level subforms (no '>') ─────
-        top_level_subforms = {
-            info["subform"] for (_, _, info) in self.xpath_map.values()
-            if info["subform"] is not None and ">" not in info["subform"]
+        sub_classes = {
         }
 
-        for subform in top_level_subforms:
-            inner_class = getattr(CurrentPole.CurrentPole, subform)
-            title = self.subform_title(subform)
-            attr_prefix = self.to_snake_case(subform)
+        for field, field_info in self.xpath_map.items():
+            missing_fields.append(self.get_data_recursion(
+                self.xpath_map, current_class, subform_level, sub_classes))
+            print(missing_fields)
+            # if field_info["subform"] == None:
+            #     try:
+            #         field_element = self.driver.find_element(
+            #             By.XPATH, field_info["xpath"])
+            #         setattr(current_class, field_element.extract_data(
+            #             field_element, field_info["data type"]
+            #         ))
+            #     except:
+            #         missing_fields.append(field)
 
-            subform_fields = [
-                (name, xp, dt) for name, (xp, dt, info) in self.xpath_map.items()
-                if info["subform"] == subform
-            ]
-
-            instances = self.get_subform_instances(title)
-
-            for form_count, inst_el in enumerate(instances, start=1):
-                obj = inner_class()
-                for name, xp, dt in subform_fields:
-                    try:
-                        el = inst_el.find_element(By.XPATH, "." + xp)
-                        setattr(obj, name, self.get_data_type(el, dt))
-                    except:
-                        missing_fields.append(
-                            f"{attr_prefix}_{form_count}.{name}")
-                    processed_fields.append(name)
-                setattr(page, f"{attr_prefix}_{form_count}", obj)
-                parent_instances.setdefault(subform, []).append((obj, inst_el))
-
-        # ───── Phase C: nested subforms (markers with '>') ─────
-        nested_subforms = {
-            info["subform"] for (_, _, info) in self.xpath_map.values()
-            if info["subform"] is not None and ">" in info["subform"]
-        }
-
-        for subform in nested_subforms:
-            parent_name, child_name = subform.split(">", 1)
-            # Walk getattr chain: CurrentPole.Anchor.Guy
-            inner_class = getattr(CurrentPole.CurrentPole, parent_name)
-            inner_class = getattr(inner_class, child_name)
-            child_title = self.subform_title(child_name)
-            parent_prefix = self.to_snake_case(parent_name)
-            child_prefix = self.to_snake_case(child_name)
-
-            child_fields = [
-                (name, xp, dt) for name, (xp, dt, info) in self.xpath_map.items()
-                if info["subform"] == subform
-            ]
-
-            for p_idx, (parent_obj, parent_el) in enumerate(
-                parent_instances.get(parent_name, []), start=1
-            ):
-                child_instances = self.get_subform_instances(
-                    child_title, scope=parent_el)
-                for form_count, child_el in enumerate(child_instances, start=1):
-                    obj = inner_class()
-                    for name, xp, dt in child_fields:
-                        try:
-                            el = child_el.find_element(By.XPATH, "." + xp)
-                            setattr(obj, name, self.get_data_type(el, dt))
-                        except:
-                            missing_fields.append(
-                                f"{parent_prefix}_{p_idx}.{child_prefix}_{form_count}.{name}"
-                            )
-                        processed_fields.append(name)
-                    setattr(parent_obj, f"{child_prefix}_{form_count}", obj)
-
-        for attribute, value in vars(page).items():
-            print(f"{attribute}: {value}")
-        for field in missing_fields:
-            print("Missing: " + field)
+            # else:
+            #     sub_class_key = f"{field} " + subform_level
+            #     sub_classes[sub_class_key] = getattr(current_class, f"{field}")()
+            #     current_class = sub_classes[sub_class_key]
+            #     self.get_data_recursion(field, field_info, current_class, subform_level, sub_classes)
 
     def generate_missing_fields_report(self, output_dict):
         for pole_id, fields in output_dict.items():

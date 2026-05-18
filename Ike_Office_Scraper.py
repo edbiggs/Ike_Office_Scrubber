@@ -1,4 +1,4 @@
-import ScraperTools
+import ScraperTools as st
 
 
 # ──────────────── Debug Mode ────────────────
@@ -25,7 +25,7 @@ def main():
 
     print("START")
 
-    scraper = ScraperTools.ScraperTools()
+    scraper = st.ScraperTools()
 
     scraper.get_url()
 
