@@ -1,5 +1,8 @@
 import ScraperTools as st
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # ──────────────── Debug Mode ────────────────
 
@@ -12,11 +15,15 @@ debug_xpath = ("//div[@title='Reel ID']"
 debug_data_type = "value"
 
 # ──────────────── Config ────────────────
+job_name ="Dawn - Kings Dominion"
+
+username = os.getenv("IKE_USERNAME")
+password = os.getenv("IKE_PASSWORD")
 
 data_extraction = False
 
 reel_id_insertion = True
-reel_id_file = "STJ-PCC_ReelIDs.csv"
+reel_id_file = "Ike_Office_Scrubber/ReelIDs.csv"
 
 # ────────────────────── Main Script ─────────────────────────
 
@@ -29,9 +36,9 @@ def main():
 
     scraper.get_url()
 
-    scraper.login()
+    scraper.login(username, password)
 
-    scraper.get_project()
+    scraper.get_project(job_name)
 
     for pole_id in scraper.get_pole_id_list():
 

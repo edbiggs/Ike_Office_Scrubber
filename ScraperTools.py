@@ -24,14 +24,7 @@ class ScraperTools():
         self.driver = webdriver.Chrome(service=self.service)
         self.actions = ActionChains(self.driver)
 
-        self.username = os.getenv("IKE_USERNAME")
-        self.password = os.getenv("IKE_PASSWORD")
-        self.job_name = os.getenv("JOB_NAME")
 
-    # Each entry: {"field", "xpath", "data type", "section", "subform"}
-    # subform value = None for single-instance fields on the main page
-    # subform value = "Equipment"/"Anchor"/etc. for multi-instance fields inside that subform
-    # subform value = "Anchor>Guy"/"Span>PowerCircuit"/"Span>Communication" for nested subforms
     xpath_map = {
         "no_changes": {
             "xpath": "//a[@title='No changes']",
@@ -483,7 +476,7 @@ class ScraperTools():
         self.driver.get(
             "https://office.ikegps.com/#/login")
 
-    def login(self):
+    def login(self, username, password):
         self.login = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
             (By.CLASS_NAME, "mdl-button--raised")))
 
@@ -495,19 +488,19 @@ class ScraperTools():
         username_input = self.driver.find_element(
             By.CLASS_NAME, "input")
 
-        username_input.send_keys(self.username + Keys.ENTER)
+        username_input.send_keys(username + Keys.ENTER)
 
         password_input = self.driver.find_element(
             By.NAME, "password")
 
-        password_input.send_keys(self.password + Keys.ENTER)
+        password_input.send_keys(password + Keys.ENTER)
 
-    def get_project(self):
+    def get_project(self, job_name):
         self.get_project = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-            (By.XPATH, "//span[@title='" + self.job_name + "']")))
+            (By.XPATH, "//span[@title='" + job_name + "']")))
 
         project = self.driver.find_element(
-            By.XPATH, "//span[@title='" + self.job_name + "']")
+            By.XPATH, "//span[@title='" + job_name + "']")
 
         project.click()
 
@@ -685,11 +678,16 @@ class ScraperTools():
 
         for reel_id, poles in self.reel_id_map.items():
             if pole_id in poles:
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
+                    (By.XPATH, self.xpath_map["reel_id"]["xpath"])))
+
                 reel_id_page_element = self.driver.find_element(
                     By.XPATH, self.xpath_map["reel_id"]["xpath"])
 
                 reel_id_page_element.click()
 
+                self.actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform
+                self.actions.send_keys(Keys.DELETE)
                 self.actions.send_keys(reel_id)
                 self.actions.key_down(Keys.CONTROL).send_keys(
                     's').key_up(Keys.CONTROL).perform()
