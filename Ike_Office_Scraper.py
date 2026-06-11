@@ -13,10 +13,10 @@ debug_data_type = "value"
 
 # ──────────────── Config ────────────────
 
-data_extraction = True
+data_extraction = False
 
-reel_id_insertion = False
-reel_id_file = "ttv_cvg_reel_ids.csv"
+reel_id_insertion = True
+reel_id_file = "STJ-PCC_ReelIDs.csv"
 
 # ────────────────────── Main Script ─────────────────────────
 
@@ -44,7 +44,7 @@ def main():
             except:
                 print("Debug configuration error: Check debug variables")
         elif reel_id_insertion == True:
-            scraper.create_reel_id_map()
+            scraper.create_reel_id_map(reel_id_file)
             scraper.insert_reel_id(pole_id)
         elif data_extraction == True:
             scraper.get_field_data(pole_id)
