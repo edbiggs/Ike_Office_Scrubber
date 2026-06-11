@@ -672,14 +672,15 @@ class ScraperTools():
                 self.reel_id_map.setdefault(
                     row["Reel ID"], []).append(row["ID"])
 
-    def insert_reel_id(self, pole_id):
-        WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(
-            (By.CLASS_NAME, "c-CollectionEditTitle__Text"), pole_id))
+    def insert_reel_id(self):
+
 
         for reel_id, poles in self.reel_id_map.items():
-            if pole_id in poles:
-                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-                    (By.XPATH, self.xpath_map["reel_id"]["xpath"])))
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
+                (By.XPATH, self.xpath_map["reel_id"]["xpath"])))
+            
+            for pole in poles:
+                self.get_next_pole(pole)
 
                 reel_id_page_element = self.driver.find_element(
                     By.XPATH, self.xpath_map["reel_id"]["xpath"])

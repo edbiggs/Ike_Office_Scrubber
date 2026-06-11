@@ -40,21 +40,24 @@ def main():
 
     scraper.get_project(job_name)
 
-    for pole_id in scraper.get_pole_id_list():
 
-        scraper.get_next_pole(pole_id)
+    if reel_id_insertion == True:
+        scraper.create_reel_id_map(reel_id_file)
+        scraper.insert_reel_id()
+    else:
+        for pole_id in scraper.get_pole_id_list():
 
-        if debug_mode == True:
-            try:
-                scraper.debug(debug_field_name, debug_xpath,
-                              debug_data_type, pole_id)
-            except:
-                print("Debug configuration error: Check debug variables")
-        elif reel_id_insertion == True:
-            scraper.create_reel_id_map(reel_id_file)
-            scraper.insert_reel_id(pole_id)
-        elif data_extraction == True:
-            scraper.get_field_data(pole_id)
+            scraper.get_next_pole(pole_id)
+
+            if debug_mode == True:
+                try:
+                    scraper.debug(debug_field_name, debug_xpath,
+                                debug_data_type, pole_id)
+                except:
+                    print("Debug configuration error: Check debug variables")
+
+            elif data_extraction == True:
+                scraper.get_field_data(pole_id)
 
     print("FINISH")
     scraper.driver.quit()
