@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from dotenv import load_dotenv
 import os
 import pandas as pd
@@ -29,7 +29,7 @@ class ScraperTools():
         "no_changes": {
             "xpath": "//a[@title='No changes']",
             "data type": "slider",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "pole_id": {
             "xpath": "//div[@title='ID']"
@@ -38,7 +38,7 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "pole_type": {
             "xpath": "//div[@title='Type']"
@@ -46,7 +46,7 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "tip": {
             "xpath": "//div[@title='Tip']"
@@ -54,19 +54,19 @@ class ScraperTools():
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "latitude": {
             "xpath": "//div[contains(@class,'c-Input--lat') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "longitude": {
             "xpath": "//div[contains(@class,'c-Input--lng') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         # Not verified
         "pla_result": {
@@ -74,21 +74,21 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//textarea",
             "data type": "text",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "pole_tag": {
             "xpath": "//div[@title='Pole Tag']"
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "facility_id_slider": {
             "xpath": "//div[@title='Facility ID']"
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "facility_id_text": {
             "xpath": "//div[@title='Facility ID Number']"
@@ -96,7 +96,7 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "mf_hdw": {
             "xpath": "//div[@title='M/F Hdw.']"
@@ -104,7 +104,7 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "anchor_count": {
             "xpath": "//div[@title='Anchor']"
@@ -112,7 +112,7 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "riser_count": {
             "xpath": "//div[@title='Riser']"
@@ -120,14 +120,14 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "splice_point_slider": {
             "xpath": "//div[@title='Splice Point']"
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         # Not verified
         "splice_type": {
@@ -136,14 +136,14 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "slack_loop": {
             "xpath": "//div[@title='Slack Loop']"
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "storage_type": {
             "xpath": "//div[@title='Storage Type']"
@@ -151,7 +151,7 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         # Not verified
         "strand": {
@@ -159,60 +159,60 @@ class ScraperTools():
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "vault": {
             "xpath": "//div[@title='Vault']"
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "reel_id": {
             "xpath": "//div[@title='Reel ID']"
                      "/following-sibling::div[contains(@class, 'c-CollectionField__Value')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "equipment_subform_count": {
             "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Equipment']"
                      "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
             "data type": "text",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "equipment_type": {
             "xpath": "//div[contains(@id,'ipf_equipmentType')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Equipment",
+            "scope": "CurrentPole.Equipment",
         },
         "equipment_orientation": {
             "xpath": "//div[contains(@id,'ipf_equipmentOrientation')]"
                      "//div[contains(@class,'c-Input--is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Equipment",
+            "scope": "CurrentPole.Equipment",
         },
         "equipment_attachment_height_ft": {
             "xpath": "//div[contains(@id,'ipf_equipmentAttachmentHeight')]"
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Equipment",
+            "scope": "CurrentPole.Equipment",
         },
         "equipment_attachment_height_in": {
             "xpath": "//div[contains(@id,'ipf_equipmentAttachmentHeight')]"
                      "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Equipment",
+            "scope": "CurrentPole.Equipment",
         },
         "anchor_subform_count": {
             "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Anchor']"
                      "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
             "data type": "text",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "anchor_lead_length_ft": {
             "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
@@ -220,7 +220,7 @@ class ScraperTools():
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Anchor",
+            "scope": "CurrentPole.Anchor",
         },
         "anchor_lead_length_in": {
             "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
@@ -228,14 +228,14 @@ class ScraperTools():
                      "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Anchor",
+            "scope": "CurrentPole.Anchor",
         },
         "anchor_lead_orientation": {
             "xpath": "//div[contains(@id,'ipf_anchorLeadLength')]"
                      "//div[contains(@class,'c-Input--bearing') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Anchor",
+            "scope": "CurrentPole.Anchor",
         },
         "guy_subform_count": {
             "xpath": "//div[@title='Guys']"
@@ -243,214 +243,214 @@ class ScraperTools():
                      "//div[contains(@class,'is-dirty')]"
                      "//textarea",
             "data type": "value",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "guy_size": {
             "xpath": "//div[contains(@id,'ipf_anchorGuySize')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Anchor.Guy",
+            "scope": "CurrentPole.Anchor.Guy",
         },
         "guy_attachment_height_ft": {
             "xpath": "//div[contains(@id,'ipf_anchorGuyAttachmentHeight')]"
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Anchor.Guy",
+            "scope": "CurrentPole.Anchor.Guy",
         },
         "guy_attachment_height_in": {
             "xpath": "//div[contains(@id,'ipf_anchorGuyAttachmentHeight')]"
                      "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Anchor.Guy",
+            "scope": "CurrentPole.Anchor.Guy",
         },
         "span_subform_count": {
             "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Span']"
                      "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
             "data type": "text",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "span_length": {
             "xpath": "//div[contains(@id,'ipf_spanLength')]"
                      "//div[contains(@class,'c-Input')]/span",
             "data type": "text",
-            "class": "CurrentPole.Span",
+            "scope": "CurrentPole.Span",
         },
         "span_type": {
             "xpath": "//div[contains(@id,'ipf_spanType')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Span",
+            "scope": "CurrentPole.Span",
         },
         "span_mid_span_ike_photo": {
             "xpath": "//div[contains(@id,'ipf_spanMidSpanIkePhoto')]"
                      "//div[contains(@class,'c-CollectionField__Value')]",
             "data type": "text",
-            "class": "CurrentPole.Span",
+            "scope": "CurrentPole.Span",
         },
         "power_circuit_subform_count": {
             "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Power Circuit']"
                      "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
             "data type": "text",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "power_circuit_type": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitType')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_primary_conductor": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryConductor')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_primary_framing": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryFraming')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_primary_phase_a_height_ft": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseAHeight')]"
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_primary_phase_a_height_in": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseAHeight')]"
                      "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_primary_phase_b_height_ft": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseBHeight')]"
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_primary_phase_b_height_in": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseBHeight')]"
                      "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_primary_phase_c_height_ft": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseCHeight')]"
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_primary_phase_c_height_in": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitPrimaryPhaseCHeight')]"
                      "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_neutral_conductor": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralConductor')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_neutral_framing": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralFraming')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_neutral_height_ft": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralHeight')]"
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "power_circuit_neutral_height_in": {
             "xpath": "//div[contains(@id,'ipf_spanPowerCircuitNeutralHeight')]"
                      "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.PowerCircuit",
+            "scope": "CurrentPole.Span.PowerCircuit",
         },
         "communication_subform_count": {
             "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Communication']"
                      "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
             "data type": "text",
-            "class": "CurrentPole",
+            "scope": "CurrentPole",
         },
         "communication_mid_span_height": {
             "xpath": "//div[contains(@id,'ipf_spanCommunicationMidSpanHeight')]"
                      "//div[contains(@class,'c-PMLink')]",
             "data type": "text",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_size": {
             "xpath": "//div[contains(@id,'ipf_spanCommunicationSize')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_owner": {
             "xpath": "//div[contains(@id,'ipf_spanCommunicationOwner')]"
                      "//span[contains(@class,'c-MultiListInput__label')]",
             "data type": "text",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_horizontal_offset": {
             "xpath": "//div[contains(@id,'ipf_spanCommunicationHorizOffset')]"
                      "//div[contains(@class,'c-Input--is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_attachment_height": {
             "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
                      "//div[contains(@class,'c-PMLink') and not(contains(@class,'c-PMLink--inputs'))]",
             "data type": "text",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_attachment_height_ft": {
             "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
                      "//div[contains(@class,'c-Input--ft') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_attachment_height_in": {
             "xpath": "//div[contains(@id,'ipf_spanCommunicationAttachmentHeight')]"
                      "//div[contains(@class,'c-Input--in') and contains(@class,'is-dirty')]"
                      "//input",
             "data type": "value",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_ms_clearance": {
             "xpath": "//div[@title='MS Clearance ']"
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//div[contains(@class,'c-PMLink')]",
             "data type": "text",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_midspan_ike_photo": {
             "xpath": "//div[@title='MidSpan IKE Photo']"
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]",
             "data type": "text",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "communication_joint_use": {
             "xpath": "//div[@title='Joint Use']"
                      "/following-sibling::div[contains(@class,'c-CollectionField__Value')]"
                      "//input[contains(@class,'c-SwitchInput__input')]",
             "data type": "slider",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "ms_height": {
             "xpath": "//div[contains(@class,'c-SubFormInstance')]"
@@ -459,7 +459,7 @@ class ScraperTools():
                      "/following-sibling::div"
                      "//div[contains(@class,'c-PMLink')]",
             "data type": "text",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
         "ms_clearance": {
             "xpath": "//div[contains(@class,'c-SubFormInstance')]"
@@ -468,10 +468,11 @@ class ScraperTools():
                      "/following-sibling::div"
                      "//div[contains(@class,'c-PMLink')]",
             "data type": "text",
-            "class": "CurrentPole.Span.Communication",
+            "scope": "CurrentPole.Span.Communication",
         },
     }
-
+   
+   # Initialization functions
     def get_url(self):
         self.driver.get(
             "https://office.ikegps.com/#/login")
@@ -527,6 +528,8 @@ class ScraperTools():
 
         next_pole.click()
 
+
+# Data extraction functions
     def extract_data(self, element, data_type):
         if data_type == "value":
             return element.get_attribute("value")
@@ -534,58 +537,9 @@ class ScraperTools():
             return element.text
         elif data_type == "slider":
             return element.is_selected()
+        
 
-    # def get_data_recursion(self, working_dict, subform_number, sub_classes, pole):
-    #     for field, field_info in working_dict.items():
-    #         print("Field: " + field, "Field info: " + str(field_info))
-
-    #         if field_info["subform"] == None:
-    #             field_class = field_info["class"]
-
-    #             try:
-    #                 field_element = self.driver.find_element(
-    #                     By.XPATH, field_info["xpath"])
-
-    #                 print("Field element: " + str(field_element))
-
-    #                 field_data = self.extract_data(field_element, field_info["data type"])
-
-    #                 if field_class != "CurrentPole":
-    #                     field_object = getattr(CurrentPole, field_class)()
-
-    #                     setattr(field_object, field, field_data)
-
-    #                     setattr(pole, field, field_object)
-    #                 else:
-    #                     setattr(pole, field, field_data)
-
-    #                 print("added " + str(field))
-    #             except NoSuchElementException:
-    #                 print("No field found: " + field)
-    #         else:
-    #             inner_class = getattr(pole, field_info["class"])
-
-    #             field_class = pole.inner_class()
-
-    #             sub_classes[] = getattr(pole, field)
-
-    #             print("Subform classes dictionary updated: " +
-    #                   str(sub_classes[sub_class_key]))
-
-    #             if field_info["class"] == "CurrentPole":
-    #                 current_class = pole
-    #             else:
-    #                 inner_class = getattr(
-    #                  field_info["class"])()
-
-    #             setattr(field, inner_class)
-
-    #             working_dict = field_info["subform"]
-
-    #             self.get_data_recursion(
-    #                 working_dict, subform_number, sub_classes, pole)
-
-    def get_field_data(self, pole_id):
+    def get_field_data(self,pole_id):
         WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(
             (By.CLASS_NAME, "c-CollectionEditTitle__Text"), pole_id))
 
@@ -594,7 +548,7 @@ class ScraperTools():
         data = {}
 
         for field, field_info in self.xpath_map.items():
-            if field_info["class"] == "CurrentPole":
+            if field_info["scope"] == "CurrentPole":
                 try:
                     field_element = self.driver.find_element(
                         By.XPATH, field_info["xpath"])
@@ -602,6 +556,7 @@ class ScraperTools():
                     field_data = self.extract_data(
                         field_element, field_info["data type"])
                     setattr(pole, f"{field}", field_data)
+                    CurrentPole.current_pole[pole]
                     print("set attribute: " + str(field) + " " + str(field_data))
                 except:
                     print("No field found: " + str(field))
@@ -620,30 +575,77 @@ class ScraperTools():
 
         print(data)
 
-        # for field, field_info in self.xpath_map.items():
-        #     if field_info["subform"] == None:
-        #         try:
-        #             field_element = self.driver.find_element(
-        #                 By.XPATH, field_info["xpath"])
-        #             setattr(current_class, field_element.extract_data(
-        #                 field_element, field_info["data type"]
-        #             ))
-        #         except:
-        #             missing_fields.append(field)
 
-        #     else:
-        #         sub_class_key = f"{field} " + subform_level
-        #         sub_classes[sub_class_key] = getattr(current_class, f"{field}")()
-        #         current_class = sub_classes[sub_class_key]
-        #         self.get_data_recursion(field, field_info, current_class, subform_level, sub_classes)
 
-    def generate_missing_fields_report(self, output_dict):
-        for pole_id, fields in output_dict.items():
-            print(f"{pole_id}:")
-            for field in fields:
-                print(f"{field}")
-            print(" ")
 
+    def check_missing_fields(self, pole_id):
+        print(pole_id)
+
+        missing_fields = []
+
+        try:
+            WebDriverWait(self.driver, 10).until(
+                EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, "c-CollectionEditTitle__Text"), 
+                pole_id
+                )
+            )
+            print(f"Found pole: {pole_id}")
+
+        except TimeoutException:
+            print(f"Timeout waiting for pole: {pole_id}")
+            return
+
+
+        for field, field_info in self.xpath_map.items():
+            if field_info["scope"] == "CurrentPole":
+                try:
+                    field_element = WebDriverWait(self.driver, 1).until(
+                    EC.presence_of_element_located((By.XPATH, field_info["xpath"]))
+                    )
+
+                    print(f"{pole_id}: Found field: {field}")
+
+                    field_data = self.extract_data(
+                        field_element, field_info["data type"])
+
+                except TimeoutException:
+                    print(f"{pole_id}: No field found (timeout): {field}")
+                    missing_fields.append(field)
+                except Exception as e:
+                    print(f"{pole_id}: No field found: {field}: {str(e)}")
+                    missing_fields.append(field)
+            else:
+                try:
+                    field_elements = self.driver.find_elements(
+                        By.XPATH, field_info["xpath"])
+
+                    if not field_elements:
+                        print(f"{pole_id}: No elements found: {field}")
+                        missing_fields.append(field)
+                    else:
+                        print(f"{pole_id}: Found {len(field_elements)} element(s) for field: {field}")
+
+                    for i, element in enumerate(field_elements):
+                        try:
+                            field_data = self.extract_data(element, field_info["data type"])
+                            print(f"{pole_id}: Found data for field {field} (element {i+1})")
+                        except Exception as e:
+                            print(f"{pole_id}: No data found for field {field} (element {i+1}): {str(e)}")
+                            missing_fields.append(field)
+                except Exception as e:
+                    print(f"{pole_id}: No elements found for field {field}: {str(e)}")
+                    
+                
+        if missing_fields:
+            print(f"{pole_id}: Missing fields: {missing_fields}")
+        else:
+            print(f"{pole_id}: All fields found successfully!")
+        
+        return missing_fields
+
+
+# Debug
     def debug(self, debug_field_name, debug_xpath, debug_data_type, pole_id):
         WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(
             (By.CLASS_NAME, "c-CollectionEditTitle__Text"), pole_id))
@@ -662,6 +664,8 @@ class ScraperTools():
         except:
             print(pole_id + ": " + debug_field_name + " N/A")
 
+
+# Reel ID functions
     reel_id_map = {}
 
     def create_reel_id_map(self, reel_id_file):
@@ -674,24 +678,51 @@ class ScraperTools():
 
     def insert_reel_id(self):
 
-
         for reel_id, poles in self.reel_id_map.items():
             WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
                 (By.XPATH, self.xpath_map["reel_id"]["xpath"])))
             
+
+            pole_id_list = self.get_pole_id_list()
+            not_found = []
+
             for pole in poles:
-                self.get_next_pole(pole)
+                if pole in pole_id_list:
+                    self.get_next_pole(pole)
 
-                reel_id_page_element = self.driver.find_element(
-                    By.XPATH, self.xpath_map["reel_id"]["xpath"])
+                    reel_id_page_element = self.driver.find_element(
+                        By.XPATH, self.xpath_map["reel_id"]["xpath"])
 
-                reel_id_page_element.click()
+                    reel_id_page_element.click()
 
-                self.actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform
-                self.actions.send_keys(Keys.DELETE)
-                self.actions.send_keys(reel_id)
-                self.actions.key_down(Keys.CONTROL).send_keys(
-                    's').key_up(Keys.CONTROL).perform()
-                self.actions.reset_actions()
-                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-                    (By.XPATH, self.xpath_map["no_changes"]["xpath"])))
+                    self.actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform
+                    self.actions.send_keys(Keys.DELETE)
+                    self.actions.send_keys(reel_id)
+                    self.actions.key_down(Keys.CONTROL).send_keys(
+                        's').key_up(Keys.CONTROL).perform()
+                    self.actions.reset_actions()
+                    WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
+                        (By.XPATH, self.xpath_map["no_changes"]["xpath"])))
+                    print("Found: " + pole)
+                else:
+                    not_found.append(pole)
+
+            for pole in not_found:
+                print("Not found: " + pole)
+
+
+# Joint use functions
+    def check_joint_use(self):
+         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
+                (By.XPATH, self.xpath_map["communication_joint_use"]["xpath"])))
+         
+         
+            
+
+# Output
+    def generate_missing_fields_report(self, output_dict):
+        for pole_id, fields in output_dict.items():
+            print(f"{pole_id}:")
+            for field in fields:
+                print(f"{field}")
+            print(" ")
