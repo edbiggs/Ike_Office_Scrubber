@@ -9,7 +9,6 @@ load_dotenv()
 debug_mode = False
 
 
-
 # ──────────────── Config ────────────────
 job_name ="Paytes-Bells Crossroad"
 
@@ -20,7 +19,7 @@ data_extraction = True
 
 
 reel_id_insertion = False
-reel_id_file = "Ike_Office_Scrubber\PTS_BCR_ReelIDs.csv"
+reel_id_file = "Ike_Office_Scrubber/PTS_BCR_ReelIDs.csv"
 
 # ────────────────────── Main Script ─────────────────────────
 
