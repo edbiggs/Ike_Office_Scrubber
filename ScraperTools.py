@@ -13,6 +13,7 @@ import pandas as pd
 import csv
 from xpath_map import xpath_map
 
+
 load_dotenv()
 
 
@@ -22,8 +23,9 @@ class ScraperTools():
         self.service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=self.service)
         self.actions = ActionChains(self.driver)
+        self.missing_fields = []
         self.output_dict = {}
-
+        self.reel_id_map = {}
     
    # Initialization functions
     #---------------------------------------------------------------------------------------------------------------
@@ -86,7 +88,6 @@ class ScraperTools():
 # Data extraction functions
 #---------------------------------------------------------------------------------------------------------------
 
-    missing_fields = []
 
     def extract_data(self, element, data_type):
         if data_type == "value":
@@ -136,56 +137,64 @@ class ScraperTools():
 
         return field_data
 
-
-
+    def process_data(self, pole_id, form_name, form_section, working_dict):
+            field_data = {}
     
-
-    def get_all_data(self, pole_id):
-        
-        pole_dict = {}
-        print(pole_id)
+            for field, field_info in form_section["fields"].items():
+                field_data[field] = self.get_subform_field_data(
+                    pole_id, field, field_info["xpath"], field_info["data type"]
+                )
     
+            if form_name == "main":
+                field_instance_count = 1
+            else:
+                form_count_field = f"{form_name}_count"
+                form_count_info = form_section["fields"][form_count_field]
+    
+                field_instance_count = self.get_field_data(
+                    pole_id, form_count_field, form_count_info["xpath"], form_count_info["data type"])
+    
+                field_instance_count = int(field_instance_count) if field_instance_count else 0
+    
+            for i in range(field_instance_count):
+                instance_key = f"{form_name}{i + 1}"
+                working_dict.setdefault(instance_key, {})
+    
+                for field, values in field_data.items():
+                    working_dict[instance_key][field] = values[i] if i < len(values) else None
+    
+                for subform, subform_contents in form_section.get("subforms", {}).items():
+                    working_dict[instance_key].setdefault(subform, {})
+                    self.process_data(pole_id, subform, subform_contents, working_dict[instance_key][subform])
+    
+    
+    def get_pole_data(self, pole_id):
+        self.missing_fields = []
         try:
             WebDriverWait(self.driver, 10).until(
                 EC.text_to_be_present_in_element(
-                (By.CLASS_NAME, "c-CollectionEditTitle__Text"), 
-                pole_id
+                    (By.CLASS_NAME, "c-CollectionEditTitle__Text"), pole_id
                 )
             )
             print(f"Found pole: {pole_id}")
-
         except TimeoutException:
             print(f"Timeout waiting for pole: {pole_id}")
             return
 
-        for field, field_info in xpath_map.items():
+        working_dict = {}
+        for form_name, form_section in xpath_map.items():
+            self.process_data(pole_id, form_name, form_section, working_dict)
 
-            field_xpath = field_info["xpath"]
-            field_form = field_info["form"]
-            field_data_type = field_info["data type"]
+        self.output_dict[pole_id] = working_dict
 
-            if not field_form:
-                pole_dict[field] = self.get_field_data(pole_id, field, field_xpath, field_data_type)
-            else:
-                field_data = self.get_subform_field_data(pole_id, field, field_xpath, field_data_type)
-
-                for i, data in enumerate(field_data, start=1):
-
-                    key = f"{field_form} {i}"
-                    pole_dict.setdefault(key, {})
-                    pole_dict[key][field] = data
-
-        self.output_dict[pole_id] = pole_dict   
-                
         if self.missing_fields:
             print(f"{pole_id}: Missing fields: {self.missing_fields}")
         else:
             print(f"{pole_id}: All fields found successfully!")
-        print(f"pole_dict: {pole_dict}")
+        print(f"working_dict: {working_dict}")
         return self.missing_fields
-
- 
-
+    
+    # Not yet functional
     def mid_span_correction(self, pole_id):
         try:
             WebDriverWait(self.driver, 10).until(
@@ -217,29 +226,10 @@ class ScraperTools():
         
 
 
-    # Debug
+    
+   # Reel ID functions
     #---------------------------------------------------------------------------------------------------------------
-    def debug(self, debug_field_name, debug_xpath, debug_data_type, pole_id):
-        WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(
-            (By.CLASS_NAME, "c-CollectionEditTitle__Text"), pole_id))
 
-        try:
-            debug_field_element = self.driver.find_element(
-                By.XPATH, debug_xpath)
-            debug_field_element.click()
-            if debug_data_type == "value":
-                print(pole_id + ": " + debug_field_name +
-                        " " + debug_field_element.get_attribute(
-                            "value"))
-            elif debug_data_type == "text":
-                print(pole_id + ": " + debug_field_name +
-                        " " + debug_field_element.text)
-        except:
-            print(pole_id + ": " + debug_field_name + " N/A")
-
-
-    # Reel ID functions
-    reel_id_map = {}
 
     def create_reel_id_map(self, reel_id_file):
 
@@ -282,16 +272,8 @@ class ScraperTools():
 
             for pole in not_found:
                 print("Not found: " + pole)
-
-
-    # Joint use functions
-    def check_joint_use(self):
-            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-                (By.XPATH, xpath_map["communication_joint_use"]["xpath"])))
             
             
-            
-
     # Output
     def generate_missing_fields_report(self, output_dict):
         for pole_id, fields in output_dict.items():

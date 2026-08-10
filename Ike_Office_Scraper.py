@@ -51,7 +51,7 @@ def main():
 
 
             elif data_extraction == True:
-                scraper.get_all_data(pole_id)
+                scraper.get_pole_data(pole_id)
 
 
     print("FINISH")
