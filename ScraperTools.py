@@ -87,8 +87,6 @@ class ScraperTools():
 
 # Data extraction functions
 #---------------------------------------------------------------------------------------------------------------
-
-
     def extract_data(self, element, data_type):
         if data_type == "value":
             return element.get_attribute("value")
@@ -96,6 +94,7 @@ class ScraperTools():
             return element.text
         elif data_type == "slider":
             return element.is_selected()
+
         
 
     def get_field_data(self, pole_id, field, field_xpath, data_type):          
@@ -119,6 +118,7 @@ class ScraperTools():
             self.missing_fields.append(field)
 
 
+
     def get_subform_field_data(self, pole_id, field, field_xpath, data_type):
 
         field_elements = self.driver.find_elements(
@@ -136,6 +136,8 @@ class ScraperTools():
                 self.missing_fields.append(field)
 
         return field_data
+
+
 
     def process_data(self, pole_id, form_name, form_section, working_dict):
             field_data = {}
@@ -167,6 +169,7 @@ class ScraperTools():
                     working_dict[instance_key].setdefault(subform, {})
                     self.process_data(pole_id, subform, subform_contents, working_dict[instance_key][subform])
     
+
     
     def get_pole_data(self, pole_id):
         self.missing_fields = []
@@ -192,7 +195,9 @@ class ScraperTools():
         else:
             print(f"{pole_id}: All fields found successfully!")
         print(f"working_dict: {working_dict}")
-        return self.missing_fields
+        return self.missing_fields, working_dict
+
+
     
     # Not yet functional
     def mid_span_correction(self, pole_id):
@@ -227,7 +232,7 @@ class ScraperTools():
 
 
     
-   # Reel ID functions
+    # Reel ID functions
     #---------------------------------------------------------------------------------------------------------------
 
 
@@ -273,7 +278,34 @@ class ScraperTools():
             for pole in not_found:
                 print("Not found: " + pole)
             
-            
+    # Final sag 
+    # D = (W * L^2) / (8 * H)
+
+    # D = sag (ft)
+    # W = unit weigth (lbs/ft)
+    # L = span length (ft)
+    # H = horizontal tension (lbs)
+    #---------------------------------------------------------------------------------------------------------------
+    def calculate_final_sag(self, pole_id, pole_dict):
+
+        span_length_ft = pole_dict["span1"]["span_length_ft"]
+        span_length_in = pole_dict["span1"]["span_length_in"]
+        span_length = float(span_length_ft) + (float(span_length_in)/12)
+
+        
+        L = span_length
+        W = 0.09316
+        H = 7.795 * (L ** 0.8258)
+        D = (W * L ** 2) / (8 * H)
+
+        print(f"L = {L}\nW = {W}\nH = {H}\nD = {D}")
+        return D
+        
+    
+
+
+
+
     # Output
     def generate_missing_fields_report(self, output_dict):
         for pole_id, fields in output_dict.items():

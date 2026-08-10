@@ -227,11 +227,14 @@ xpath_map = {
                     "xpath": "//div[contains(@class,'c-SubForm__TitleName') and @title='Span']"
                             "/following-sibling::div[contains(@class,'c-SubForm__TitleCount')]",
                     "data type": "text",
-                            },
-                "span_length": {
-                    "xpath": "//div[contains(@id,'ipf_spanLength')]"
-                                "//div[contains(@class,'c-Input')]/span",
-                    "data type": "text",
+                },
+                "span_length_ft": {
+                    "xpath": "//div[contains(@id,'spanLength')]//div[contains(@class,'c-Input--ft')]//input",
+                    "data type": "value",
+                },
+                "span_length_in": {
+                    "xpath": "//div[contains(@id,'spanLength')]//div[contains(@class,'c-Input--in')]//input",
+                    "data type": "value",
                 },
                 "span_type": {
                     "xpath": "//div[contains(@id,'ipf_spanType')]"

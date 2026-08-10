@@ -7,7 +7,7 @@ load_dotenv()
 # ──────────────── Debug Mode ────────────────
 
 debug_mode = False
-
+debug_xpath = "//div[contains(@id,'ipf_spanLength')]//div[contains(@class,'c-Input')]/span"
 
 # ──────────────── Config ────────────────
 job_name ="Paytes-Bells Crossroad"
@@ -17,6 +17,7 @@ password = os.getenv("IKE_PASSWORD")
 
 data_extraction = True
 
+calculate_final_sag = True
 
 reel_id_insertion = False
 reel_id_file = "Ike_Office_Scrubber/PTS_BCR_ReelIDs.csv"
@@ -46,12 +47,13 @@ def main():
             scraper.get_next_pole(pole_id)
 
             if debug_mode == True:
-
-                scraper.get_all_data(pole_id)
-
-
+                scraper.debug(pole_id)
+                break
             elif data_extraction == True:
-                scraper.get_pole_data(pole_id)
+                missing_data, found_data = scraper.get_pole_data(pole_id)
+                if calculate_final_sag == True:
+                    scraper.calculate_final_sag(pole_id, found_data)
+
 
 
     print("FINISH")
