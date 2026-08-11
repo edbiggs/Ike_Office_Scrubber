@@ -10,7 +10,7 @@ debug_mode = False
 debug_xpath = "//div[contains(@id,'ipf_spanLength')]//div[contains(@class,'c-Input')]/span"
 
 # ──────────────── Config ────────────────
-job_name ="Paytes-Bells Crossroad"
+job_name ="sun energy"
 
 username = os.getenv("IKE_USERNAME")
 password = os.getenv("IKE_PASSWORD")
@@ -41,23 +41,22 @@ def main():
     if reel_id_insertion == True:
         scraper.create_reel_id_map(reel_id_file)
         scraper.insert_reel_id()
+
     else:
         for pole_id in scraper.get_pole_id_list():
-
             scraper.get_next_pole(pole_id)
 
             if debug_mode == True:
                 scraper.debug(pole_id)
                 break
+
             elif data_extraction == True:
                 missing_data, found_data = scraper.get_pole_data(pole_id)
+
                 if calculate_final_sag == True:
-                    scraper.calculate_final_sag(pole_id, found_data)
-
-
+                    scraper.export_final_sag(job_name)
 
     print("FINISH")
     scraper.driver.quit()
-
 
 main()
