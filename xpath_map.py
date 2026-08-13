@@ -230,11 +230,15 @@ xpath_map = {
                 },
                 "span_length_ft": {
                     "xpath": "//div[contains(@id,'spanLength')]//div[contains(@class,'c-Input--ft')]//input",
+                    "fallback_xpath": "//div[contains(@id,'spanLength')]//span",
                     "data type": "value",
+                    "fallback_data_type": "text",
                 },
                 "span_length_in": {
                     "xpath": "//div[contains(@id,'spanLength')]//div[contains(@class,'c-Input--in')]//input",
+                    "fallback_xpath": "//div[contains(@id,'spanLength')]//span",
                     "data type": "value",
+                    "fallback_data_type": "text",
                 },
                 "span_type": {
                     "xpath": "//div[contains(@id,'ipf_spanType')]"

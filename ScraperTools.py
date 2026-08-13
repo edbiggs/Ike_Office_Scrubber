@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import os
 import pandas as pd
 import csv
+import re
 from xpath_map import xpath_map
 
 
@@ -121,81 +122,158 @@ class ScraperTools():
 
 
         
-    def get_field_data(self, pole_id, field, field_xpath, data_type):  
+    def get_field_data(self, pole_id, field, field_xpath, data_type, fallback_xpath=None, fallback_data_type=None):
 
         try:
-            field_element = self.driver.find_element(
-                By.XPATH, field_xpath)
+            field_element = self.driver.find_element(By.XPATH, field_xpath)
+            print(f"{pole_id}: Found field: {field} \n")
 
-            print(f"{pole_id}: Found field: {field}")
+            field_data = self.extract_data(field_element, data_type)
 
-            data = self.extract_data(
-                field_element, data_type)
-            if not data:
+            if not field_data:
                 self.missing_fields.append(field)
+            return field_data
 
-        except Exception as e:
-            print(f"{pole_id}: No field found: {field}: {str(e)}")
-            self.missing_fields.append(field)
+        except NoSuchElementException:
+            if fallback_xpath:
+                try:
+                    fallback_element = self.driver.find_element(By.XPATH, fallback_xpath)
+                    fallback_data = self.extract_data(fallback_element, fallback_data_type)
+
+                    if fallback_data:
+                        print(f"{pole_id}: Found field via fallback: {field} \n")
+
+                        if data_type == fallback_data_type:
+                            parsed_data = self.parse_composite_span_summary(field_data)
+
+                            if field == "span_length_ft":
+                                return parsed_data["feet"]
+                            
+                            elif field == "span_length_in":
+                                return parsed_data["inches"]
+                except NoSuchElementException:
+                    pass
+
+        print(f"{pole_id}: No field found: {field} \n")
+        self.missing_fields.append(field)
+        return None
 
 
-    def get_subform_field_data(self, pole_id, field, field_xpath, data_type):
 
-        field_elements = self.driver.find_elements(
-            By.XPATH, field_xpath)
-        
+    def get_subform_field_data(self, pole_id, field, field_xpath, data_type, fallback_xpath=None, fallback_data_type=None):
+
+
+        if field in ("span_length_ft", "span_length_in"):
+            print(f"DEBUG entering get_subform_field_data: field={field} data_type={data_type} fallback_xpath={fallback_xpath!r}")
+
+
+
+        field_elements = self.driver.find_elements(By.XPATH, field_xpath)
+        used_fallback = False
+
+        if not field_elements and fallback_xpath:
+            field_elements = self.driver.find_elements(By.XPATH, fallback_xpath)
+            data_type = fallback_data_type
+            used_fallback = True
+            if field_elements:
+                print(f"{pole_id}: Found data for field {field} via fallback")
+
         field_data = []
 
         for i, element in enumerate(field_elements):
             try:
                 data = self.extract_data(element, data_type)
-                print(f"{pole_id}: Found data for field {field} (element {i+1})")
+
+                if used_fallback and data:
+                    parsed_data = self.parse_composite_span_summary(data)
+                    if parsed_data:
+                        if field == "span_length_ft":
+                            data = parsed_data["feet"]
+                        elif field == "span_length_in":
+                            data = parsed_data["inches"]
+
+                print(f"{pole_id}: Found data for field {field} (element {i+1}) \n")
+
                 field_data.append(data)
+
                 if not data:
                     self.missing_fields.append(field)
 
             except Exception as e:
-                print(f"{pole_id}: No data found for field {field} (element {i+1}): {str(e)}")
+                print(f"{pole_id}: No data found for field {field} (element {i+1}): {str(e)} \n")
                 self.missing_fields.append(field)
+                field_data.append(None)
+
+
+        if field in ("span_length_ft", "span_length_in"):
+            print(f"DEBUG returning: field={field} field_data={field_data}")
+
 
         return field_data
 
+    def parse_composite_span_summary(self, text):
+        match = re.match(r"(\d+)'(?:\s*(\d+)\")?", text.strip())
+        if not match:
+            return None
+
+        feet, inches = match.groups()
+        return {
+            "feet": float(feet),
+            "inches": float(inches) if inches else 0.0,
+        }
 
     def process_data(self, pole_id, form_name, section, working_dict):
             
-            field_data = {}
-    
-            for field, field_info in section["fields"].items():
-                field_data[field] = self.get_subform_field_data(
-                    pole_id, field, field_info["xpath"], field_info["data type"]
-                )
-    
-            if form_name == "main":
-                form_instance_count = 1
-            else:
-                form_count_field = f"{form_name}_count"
-                form_count_info = section["fields"][form_count_field]
-    
-                form_instance_count = self.get_field_data(
-                    pole_id, form_count_field, form_count_info["xpath"], form_count_info["data type"])
-                form_instance_count = int(form_instance_count) if form_instance_count else 0
-    
-            for i in range(form_instance_count):
-                instance_key = f"{form_name}{i + 1}"
-                working_dict.setdefault(instance_key, {})
-    
-                for field, values in field_data.items():
-                    working_dict[instance_key][field] = values[i] if i < len(values) else None
-    
-                for subform, subform_contents in section.get("subforms", {}).items():
-                    working_dict[instance_key].setdefault(subform, {})
-                    self.process_data(pole_id, subform, subform_contents, working_dict[instance_key][subform])
-    
+        field_data = {}
+
+        for field, field_info in section["fields"].items():
+
+            field_xpath = field_info["xpath"]
+            field_data_type = field_info["data type"]
+            field_fallback_xpath = field_info.get("fallback_xpath")
+            field_fallback_data_type = field_info.get("fallback_data_type")
+
+
+            if field in ("span_length_ft", "span_length_in"):
+                print(f"DEBUG [{field}] primary_xpath={field_xpath!r} fallback_xpath={field_fallback_xpath!r} fallback_data_type={field_fallback_data_type!r} \n")
+
+
+            field_data[field] = self.get_subform_field_data(
+                pole_id, field, field_xpath, field_data_type, field_fallback_xpath, field_fallback_data_type
+            )
+
+        if form_name == "main":
+            form_instance_count = 1
+        else:
+            form_count_field = f"{form_name}_count"
+            form_count_info = section["fields"][form_count_field]
+
+            form_instance_count = self.get_field_data(
+                pole_id, form_count_field, form_count_info["xpath"], form_count_info["data type"])
+            
+            form_instance_count = int(form_instance_count) if form_instance_count else 0
+
+        for i in range(form_instance_count):
+            instance_key = f"{form_name}{i + 1}"
+            working_dict.setdefault(instance_key, {})
+
+            for field, values in field_data.items():
+                if i < len(values):
+                    working_dict[instance_key][field] = values[i]
+                else:
+                    working_dict[instance_key][field] = None
+                    print(f"Warning: Missing data for {field} in {instance_key} for pole {pole_id}")
+
+            for subform, subform_contents in section.get("subforms", {}).items():
+                working_dict[instance_key].setdefault(subform, {})
+                self.process_data(pole_id, subform, subform_contents, working_dict[instance_key][subform])
+
     
     def get_pole_data(self, pole_id):
 
         results = []
         self.missing_fields = []
+
         try:
             WebDriverWait(self.driver, 10).until(
                 EC.text_to_be_present_in_element(
@@ -214,11 +292,13 @@ class ScraperTools():
         self.output_dict[pole_id] = working_dict
 
         if self.missing_fields:
-            print(f"{pole_id}: Missing fields: {self.missing_fields}")
+            print(f"{pole_id}: Missing fields: {self.missing_fields}\n")
         else:
             print(f"{pole_id}: All fields found successfully!")
 
-        print(f"working_dict: {working_dict}")
+        for key, value in working_dict.items():
+            print(f"{pole_id}: {key}: {value} \n")
+
         return self.missing_fields, working_dict
 
     # Not yet functional
@@ -306,26 +386,50 @@ class ScraperTools():
     # H = horizontal tension (lbs)
     #---------------------------------------------------------------------------------------------------------------
     def calculate_final_sag(self, pole_id, pole_dict):
+
+        results = []
+        span_count = 1
+
         for key, value in pole_dict.items():
+            
             if key.startswith("span") and key != "span_type": 
                 span_length_ft = value.get("span_length_ft")
                 span_length_in = value.get("span_length_in")
 
                 if span_length_ft is None:
-                    print(f"Inaccessible value: {pole_id} {key}")
-                    return "Inaccessible span length"
+                    print(f"Inaccessible value: {pole_id} {key} \n")
+
 
                 else:
-                    span_length = float(span_length_ft) + (float(span_length_in)/12)
+                    try:
+                        span_length = float(span_length_ft) + (float(span_length_in) / 12)
+                    except (ValueError, TypeError):
+                        self.inaccessible_span_lengths[pole_id] = key
+                        print(f"{pole_id} {key}: could not parse span length as float, skipping \n")
+                        continue
 
                     L = span_length
                     W = 0.09316
                     H = 7.795 * (L ** 0.8258)
                     D = (W * L ** 2) / (8 * H)
 
-                    print(f"Comm 1:\nL = {L}\nW = {W}\nH = {H}\nD = {D}")
+                    print(f"{pole_id} Comm {span_count}:\nL = {L}\nW = {W}\nH = {H}\nD = {D} \n")
 
-                    return D
+                    results.append({
+                        'pole_id': pole_id,
+                        'span_key': key,
+                        'final_sag': D,
+                        'span_length': L,
+                        'horizontal_tension': H,
+                        'assumed_weight': W
+                    })
+
+                    span_count += 1
+
+        if results:
+            return results
+        else:
+            return {}
                 
     # Outputs
     #---------------------------------------------------------------------------------------------------------------
@@ -340,11 +444,37 @@ class ScraperTools():
 
         output_path = f"{job_name}_final_sag.xlsx"
 
-        results = []
+        output = []
 
         for pole_id, pole_dict in self.output_dict.items():
-            final_sag = self.calculate_final_sag(pole_id, pole_dict)
-            results.append((pole_id, final_sag))
 
-        df = pd.DataFrame(results, columns=["Pole ID", "Final Sag (ft)"])
+            final_sag_results = self.calculate_final_sag(pole_id, pole_dict)
+
+            print(f"{final_sag_results} \n")
+
+            for result in final_sag_results:
+
+                print(f"{result} \n")
+                
+                output.append((
+                    result['pole_id'],
+                    result['final_sag'],
+                    result['span_length'],
+                    result['horizontal_tension'],
+                    result['assumed_weight']
+                ))
+
+
+        df = pd.DataFrame(output, columns=["Pole ID", "Final Sag (ft)", "Span Length", "Horizontal Tension", "Assumed Weight"])
         df.to_excel(output_path, index=False)
+
+
+
+
+    # Debug
+
+    def debug(self, xpath):
+        elements = self.driver.find_elements(By.XPATH, xpath)
+        print(len(elements))
+        if elements:
+            print(elements[0].get_attribute("outerHTML"))

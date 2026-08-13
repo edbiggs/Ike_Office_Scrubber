@@ -7,7 +7,7 @@ load_dotenv()
 # ──────────────── Debug Mode ────────────────
 
 debug_mode = False
-debug_xpath = "//div[contains(@id,'ipf_spanLength')]//div[contains(@class,'c-Input')]/span"
+debug_xpath = "//div[contains(@id,'spanLength')]//span"
 
 # ──────────────── Config ────────────────
 job_name ="sun energy"
@@ -47,7 +47,7 @@ def main():
             scraper.get_next_pole(pole_id)
 
             if debug_mode == True:
-                scraper.debug(pole_id)
+                scraper.debug(debug_xpath)
                 break
 
             elif data_extraction == True:
