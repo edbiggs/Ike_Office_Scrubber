@@ -1,4 +1,4 @@
-import ScraperTools as st
+import ScraperTools as tools
 import os
 from dotenv import load_dotenv
 
@@ -10,18 +10,17 @@ debug_mode = False
 debug_xpath = "//div[contains(@id,'spanLength')]//span"
 
 # ──────────────── Config ────────────────
-job_name ="sun energy"
+job_name ="polecat creek - caroline pines"
 
 username = os.getenv("IKE_USERNAME")
 password = os.getenv("IKE_PASSWORD")
 
-data_extraction = True
+data_extraction = False
 
 calculate_final_sag = True
 
-reel_id_insertion = False
-reel_id_file = "Ike_Office_Scrubber/PTS_BCR_ReelIDs.csv"
-
+reel_id_insertion = True
+reel_id_file = "Ike_Office_Scrubber/PCC_CAP_ReelIDs.csv"
 # ────────────────────── Main Script ─────────────────────────
 
 
@@ -29,7 +28,7 @@ def main():
 
     print("START")
 
-    scraper = st.ScraperTools()
+    scraper = tools.ScraperTools()
 
     scraper.get_url()
 
@@ -52,6 +51,7 @@ def main():
 
             elif data_extraction == True:
                 missing_data, found_data = scraper.get_pole_data(pole_id)
+                scraper.export_missing_fields(job_name)
 
                 if calculate_final_sag == True:
                     scraper.export_final_sag(job_name)

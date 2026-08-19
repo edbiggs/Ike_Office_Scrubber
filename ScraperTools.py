@@ -24,7 +24,7 @@ class ScraperTools():
         self.service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=self.service)
         self.actions = ActionChains(self.driver)
-        self.missing_fields = []
+        self.missing_fields = {}
         self.output_dict = {}
         self.reel_id_map = {}
         self.inaccessible_span_lengths = {}
@@ -97,7 +97,7 @@ class ScraperTools():
 
 
 # Data extraction functions
-#---------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------- 
     def extract_data(self, element, data_type, extracted_data=None):
 
         extractors = {
@@ -122,7 +122,7 @@ class ScraperTools():
 
 
         
-    def get_field_data(self, pole_id, field, field_xpath, data_type, fallback_xpath=None, fallback_data_type=None):
+    def get_field_data(self, pole_id, field, field_xpath, data_type, form_name, fallback_xpath=None, fallback_data_type=None):
 
         try:
             field_element = self.driver.find_element(By.XPATH, field_xpath)
@@ -131,7 +131,7 @@ class ScraperTools():
             field_data = self.extract_data(field_element, data_type)
 
             if not field_data:
-                self.missing_fields.append(field)
+                self.missing_fields.setdefault(pole_id, []).append(f"{form_name} {field}")
             return field_data
 
         except NoSuchElementException:
@@ -155,12 +155,12 @@ class ScraperTools():
                     pass
 
         print(f"{pole_id}: No field found: {field} \n")
-        self.missing_fields.append(field)
+        self.missing_fields.setdefault(pole_id, []).append(f"{form_name} {field}")
         return None
 
 
 
-    def get_subform_field_data(self, pole_id, field, field_xpath, data_type, fallback_xpath=None, fallback_data_type=None):
+    def get_subform_field_data(self, pole_id, field, field_xpath, data_type, form_name, fallback_xpath=None, fallback_data_type=None):
 
 
         if field in ("span_length_ft", "span_length_in"):
@@ -197,11 +197,11 @@ class ScraperTools():
                 field_data.append(data)
 
                 if not data:
-                    self.missing_fields.append(field)
+                    self.missing_fields.setdefault(pole_id, []).append(f"{form_name} {field}")
 
             except Exception as e:
                 print(f"{pole_id}: No data found for field {field} (element {i+1}): {str(e)} \n")
-                self.missing_fields.append(field)
+                self.missing_fields.setdefault(pole_id, []).append(f"{form_name} {field}")
                 field_data.append(None)
 
 
@@ -239,7 +239,7 @@ class ScraperTools():
 
 
             field_data[field] = self.get_subform_field_data(
-                pole_id, field, field_xpath, field_data_type, field_fallback_xpath, field_fallback_data_type
+                pole_id, field, field_xpath, field_data_type, form_name, field_fallback_xpath, field_fallback_data_type
             )
 
         if form_name == "main":
@@ -249,7 +249,7 @@ class ScraperTools():
             form_count_info = section["fields"][form_count_field]
 
             form_instance_count = self.get_field_data(
-                pole_id, form_count_field, form_count_info["xpath"], form_count_info["data type"])
+                pole_id, form_count_field, form_count_info["xpath"], form_count_info["data type"], form_name)
             
             form_instance_count = int(form_instance_count) if form_instance_count else 0
 
@@ -262,7 +262,7 @@ class ScraperTools():
                     working_dict[instance_key][field] = values[i]
                 else:
                     working_dict[instance_key][field] = None
-                    print(f"Warning: Missing data for {field} in {instance_key} for pole {pole_id}")
+                    print(f"Missing {field} in {instance_key} for pole {pole_id}")
 
             for subform, subform_contents in section.get("subforms", {}).items():
                 working_dict[instance_key].setdefault(subform, {})
@@ -272,7 +272,6 @@ class ScraperTools():
     def get_pole_data(self, pole_id):
 
         results = []
-        self.missing_fields = []
 
         try:
             WebDriverWait(self.driver, 10).until(
@@ -291,15 +290,15 @@ class ScraperTools():
 
         self.output_dict[pole_id] = working_dict
 
-        if self.missing_fields:
-            print(f"{pole_id}: Missing fields: {self.missing_fields}\n")
+        if self.missing_fields[pole_id]:
+            print(f"{pole_id}: Missing fields: {self.missing_fields[pole_id]}\n")
         else:
             print(f"{pole_id}: All fields found successfully!")
 
         for key, value in working_dict.items():
             print(f"{pole_id}: {key}: {value} \n")
 
-        return self.missing_fields, working_dict
+        return self.missing_fields[pole_id], working_dict
 
     # Not yet functional
     def mid_span_correction(self, pole_id):
@@ -347,7 +346,7 @@ class ScraperTools():
 
         for reel_id, poles in self.reel_id_map.items():
             WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-                (By.XPATH, xpath_map["reel_id"]["xpath"])))
+                (By.XPATH, xpath_map["main"]["fields"]["reel_id"]["xpath"])))
             
 
             pole_id_list = self.get_pole_id_list()
@@ -358,7 +357,7 @@ class ScraperTools():
                     self.get_next_pole(pole)
 
                     reel_id_page_element = self.driver.find_element(
-                        By.XPATH, xpath_map["reel_id"]["xpath"])
+                        By.XPATH, xpath_map["main"]["fields"]["reel_id"]["xpath"])
 
                     reel_id_page_element.click()
 
@@ -370,7 +369,7 @@ class ScraperTools():
                     self.actions.reset_actions()
 
                     WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-                        (By.XPATH, xpath_map["no_changes"]["xpath"])))
+                        (By.XPATH, xpath_map["main"]["fields"]["no_changes"]["xpath"])))
                     print("Found: " + pole)
                 else:
                     not_found.append(pole)
@@ -392,7 +391,11 @@ class ScraperTools():
 
         for key, value in pole_dict.items():
             
-            if key.startswith("span") and key != "span_type": 
+            if key.startswith("span") and key != "span_type" and value.get("span_type") == "Fore Span": 
+
+                span_type = value.get("span_type")
+                comm_owner = value.get("communication_owner")
+
                 span_length_ft = value.get("span_length_ft")
                 span_length_in = value.get("span_length_in")
 
@@ -417,11 +420,12 @@ class ScraperTools():
 
                     results.append({
                         'pole_id': pole_id,
-                        'span_key': key,
-                        'final_sag': D,
+                        'span_type': span_type,
+                        'comm_owner': comm_owner,
                         'span_length': L,
                         'horizontal_tension': H,
-                        'assumed_weight': W
+                        'assumed_weight': W,
+                        'final_sag': D
                     })
 
                     span_count += 1
@@ -430,15 +434,6 @@ class ScraperTools():
             return results
         else:
             return {}
-                
-    # Outputs
-    #---------------------------------------------------------------------------------------------------------------
-    def generate_missing_fields_report(self, output_dict):
-        for pole_id, fields in output_dict.items():
-            print(f"{pole_id}:")
-            for field in fields:
-                print(f"{field}")
-            print(" ")
 
     def export_final_sag(self, job_name, output_path=None):
 
@@ -458,14 +453,30 @@ class ScraperTools():
                 
                 output.append((
                     result['pole_id'],
-                    result['final_sag'],
+                    result['span_type'],
+                    result['comm_owner'],
                     result['span_length'],
                     result['horizontal_tension'],
-                    result['assumed_weight']
+                    result['assumed_weight'],
+                    result['final_sag']
                 ))
 
+        df = pd.DataFrame(output, columns=["Pole ID", "Span Type", "Communication Owner", "Span Length", "Horizontal Tension", "Assumed Weight", "Final Sag (ft)"])
+        df.to_excel(output_path, index=False)
 
-        df = pd.DataFrame(output, columns=["Pole ID", "Final Sag (ft)", "Span Length", "Horizontal Tension", "Assumed Weight"])
+
+
+    def export_missing_fields(self, job_name, output_path=None):
+
+        output_path = f"{job_name}_missing_fields.xlsx"
+
+        output = []
+
+        for pole_id, missing_field_list in self.missing_fields.items():
+            for field in missing_field_list:
+                output.append((pole_id, field))
+
+        df = pd.DataFrame(output, columns=["Pole ID", "Missing Field"])
         df.to_excel(output_path, index=False)
 
 
